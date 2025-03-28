@@ -1,0 +1,65 @@
+.dashboard-container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .class-card {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+  
+  .class-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .class-card h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+  }
+  
+  .class-card p {
+    margin: 0;
+    color: #7f8c8d;
+  }
+  
+  .class-card .menu-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #2c3e50;
+  }
+  
+  
+  .menu-modal {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    z-index: 10;
+  }
+  
+  .cancel-button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c0392b;
+  }
+  

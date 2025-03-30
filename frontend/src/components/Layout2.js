@@ -46,16 +46,16 @@ const Navbar = ({ addClass }) => {
       setError('Todos los campos son obligatorios.');
       return;
     }
-
+  
     const newClass = {
       nombre: className,
       descripcion: description,
       codigo_grupo: classCode,
       carrera: 'Ingeniería en Tecnologías de la Información',
       cuatrimestre: cuatrimestre,
-      profesor_id: profesorId // ✅ Ahora enviamos el profesor_id
+      profesor_id: profesorId 
     };
-
+  
     try {
       const response = await fetch('http://localhost:8000/api/clases', {
         method: 'POST',
@@ -64,26 +64,29 @@ const Navbar = ({ addClass }) => {
         },
         body: JSON.stringify(newClass),
       });
-
+  
       const data = await response.json();
       
       if (!response.ok) {
         console.error('Error en la API:', data);
         throw new Error(data.message || 'Error al crear la clase');
       }
-
-      addClass(data.clase); // ✅ Agregar la clase al estado global
+  
+      addClass(data.clase);
       setClassName('');
       setDescription('');
       setClassCode('');
       setCuatrimestre('');
       setIsCreateModalOpen(false);
       setError('');
+      
+      window.location.reload(); // 🔄 Refrescar la página después de la creación exitosa
+  
     } catch (error) {
       console.error('Error en la solicitud:', error);
       setError('No se pudo crear la clase. Inténtalo de nuevo.');
     }
-  };
+  };  
 
   const handleNavigateToDashboard = () => {
     navigate('/teacher/Dashboard2');
@@ -132,7 +135,13 @@ const Navbar = ({ addClass }) => {
   );
 };
 
-const Layout2 = ({ children, addClass }) => {
+const Layout2 = ({ children }) => {
+  const [clases, setClases] = useState([]); // Estado global de clases
+
+  const addClass = (newClass) => {
+    setClases((prevClases) => [...prevClases, newClass]); // Agregar la nueva clase al estado
+  };
+
   return (
     <div className="layout">
       <div className="content">

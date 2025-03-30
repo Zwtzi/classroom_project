@@ -32,4 +32,11 @@ class ClaseController extends Controller
             'clase' => $clase
         ], 201);
     }
+
+    public function index()
+    {
+        $clases = Clase::all(); // Recupera todas las clases
+        return response()->json($clases);
+    }
+
 }

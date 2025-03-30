@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::post('/clases', [ClaseController::class, 'store']);
+Route::get('/clases', [ClaseController::class, 'index']); // Nueva ruta para obtener clases
 
 
 Route::post('login', [AuthController::class, 'login']);

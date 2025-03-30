@@ -115,7 +115,6 @@ const Navbar = ({ addClass }) => {
         <div className="modal-overlay">
           <div className="modal-content" ref={modalRef}>
             <h2>Crear una clase</h2>
-            {error && <p className="error-message">{error}</p>}
             <input type="text" placeholder="Nombre de la clase" className="class-input" value={className} onChange={e => setClassName(e.target.value)} />
             <input type="text" placeholder="Descripción" className="class-input" value={description} onChange={e => setDescription(e.target.value)} />
             <input type="text" placeholder="Código del grupo" className="class-input" value={classCode} onChange={e => setClassCode(e.target.value)} />

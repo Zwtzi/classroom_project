@@ -1,6 +1,9 @@
 import React, { useState } from 'react'; 
 import Layout2 from '../components/Layout2';
 import '../styles/ClassView.css';
+import axios from 'axios';
+import { useEffect } from 'react';
+
 
 const ClassView = ({ classCode, className, classDescription }) => {
   const [announcements, setAnnouncements] = useState([]);
@@ -15,35 +18,67 @@ const ClassView = ({ classCode, className, classDescription }) => {
   const [taskFile, setTaskFile] = useState(null); // Nuevo estado para los archivos de tarea
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+  const [availableStudents, setAvailableStudents] = useState([]); // Alumnos disponibles
+  const [selectedStudent, setSelectedStudent] = useState('');
+
 
   const formatDate = (date) => {
     const options = { day: 'numeric', month: 'long' };
     return date.toLocaleDateString('es-ES', options);
   };
 
-  const handleCreateAnnouncement = () => {
-    if (announcementText || announcementFile) {
-      const newAnnouncement = {
-        text: announcementText,
-        date: formatDate(new Date()),
-        modificationDate: null, // No tiene fecha de modificación al principio
-        file: announcementFile
-      };
-      if (editingAnnouncement !== null) {
-        // Update existing announcement
-        const updatedAnnouncements = announcements.map((announcement, index) =>
-          index === editingAnnouncement ? { ...newAnnouncement, modificationDate: formatDate(new Date()) } : announcement
-        );
-        setAnnouncements(updatedAnnouncements);
-        setEditingAnnouncement(null);
-      } else {
-        setAnnouncements([...announcements, newAnnouncement]);
-      }
-      setAnnouncementText('');
-      setAnnouncementFile(null);
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/api/alumnos")
+        .then(response => {
+          console.log("Lista de alumnos:", response.data);
+          setAvailableStudents(response.data); // Guarda los alumnos en el estado
+        })
+        .catch(error => {
+          console.error("Error al obtener alumnos:", error);
+        });
+  }, []);
+
+
+
+  const handleAddStudent = () => {
+    if (selectedStudent) {
+      // Enviar al backend el ID del alumno y el código de la clase
+      axios.post("http://localhost:5000/api/students", {
+        classCode,            // Código de la clase
+        studentId: selectedStudent // ID del alumno seleccionado
+      })
+          .then(response => {
+            setStudents([...students, response.data]); // Actualiza el estado de estudiantes
+            setSelectedStudent(''); // Resetea el valor seleccionado
+          })
+          .catch(error => console.error("Error al agregar alumno:", error));
     }
   };
 
+
+
+  const handleCreateAnnouncement = async () => {
+    if (announcementText || announcementFile) {
+      const formData = new FormData();
+      formData.append("text", announcementText);
+      formData.append("date", new Date().toISOString());
+      if (announcementFile) {
+        formData.append("file", announcementFile);
+      }
+
+      try {
+        const response = await axios.post("http://localhost:5000/api/announcements", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        setAnnouncements([...announcements, response.data]);
+        setAnnouncementText('');
+        setAnnouncementFile(null);
+      } catch (error) {
+        console.error("Error al crear el anuncio:", error);
+      }
+    }
+  };
   const handleEditAnnouncement = (index) => {
     const announcement = announcements[index];
     setAnnouncementText(announcement.text);
@@ -51,32 +86,33 @@ const ClassView = ({ classCode, className, classDescription }) => {
     setEditingAnnouncement(index);
   };
 
-  const handleCreateTask = () => {
+  const handleCreateTask = async () => {
     if (taskTitle && taskInstructions && dueDate) {
-      const newTask = {
-        title: taskTitle,
-        instructions: taskInstructions,
-        dueDate,
-        date: formatDate(new Date()),
-        modificationDate: null, // No tiene fecha de modificación al principio
-        file: taskFile
-      };
-      if (editingTask !== null) {
-        // Update existing task
-        const updatedTasks = tasks.map((task, index) =>
-          index === editingTask ? { ...newTask, modificationDate: formatDate(new Date()) } : task
-        );
-        setTasks(updatedTasks);
-        setEditingTask(null);
-      } else {
-        setTasks([...tasks, newTask]);
+      const formData = new FormData();
+      formData.append("title", taskTitle);
+      formData.append("instructions", taskInstructions);
+      formData.append("dueDate", dueDate);
+      formData.append("date", new Date().toISOString());
+      if (taskFile) {
+        formData.append("file", taskFile);
       }
-      setTaskTitle('');
-      setTaskInstructions('');
-      setDueDate('');
-      setTaskFile(null); // Reset task file
+
+      try {
+        const response = await axios.post("http://localhost:5000/api/tasks", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        setTasks([...tasks, response.data]);
+        setTaskTitle('');
+        setTaskInstructions('');
+        setDueDate('');
+        setTaskFile(null);
+      } catch (error) {
+        console.error("Error al crear la tarea:", error);
+      }
     }
   };
+
 
   const handleEditTask = (index) => {
     const task = tasks[index];
@@ -101,12 +137,6 @@ const ClassView = ({ classCode, className, classDescription }) => {
     }
   };
 
-  const handleAddStudent = () => {
-    if (newStudent) {
-      setStudents([...students, newStudent]);
-      setNewStudent('');
-    }
-  };
 
   return (
     <Layout2>
@@ -124,19 +154,20 @@ const ClassView = ({ classCode, className, classDescription }) => {
 
         <section className="students">
           <h2>Alumnos</h2>
-          <input 
-            type="text" 
-            placeholder="Nombre del alumno" 
-            value={newStudent} 
-            onChange={(e) => setNewStudent(e.target.value)} 
-          />
+          <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
+            <option value="">Selecciona un alumno</option>
+            {availableStudents.map((student, index) => (
+                <option key={index} value={student.id}>{student.nombre}</option>
+            ))}
+          </select>
           <button onClick={handleAddStudent}>Agregar Alumno</button>
           <ul>
             {students.map((student, index) => (
-              <li key={index}>{student}</li>
+                <li key={index}>{student}</li>
             ))}
           </ul>
         </section>
+
 
         <section className="announcements">
           <h2>Anuncios</h2>
@@ -213,6 +244,8 @@ const ClassView = ({ classCode, className, classDescription }) => {
       </div>
     </Layout2>
   );
+
 };
+
 
 export default ClassView;

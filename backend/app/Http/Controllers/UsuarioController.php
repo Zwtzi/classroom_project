@@ -34,4 +34,11 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ]);
     }
+
+    public function getAlumnos()
+    {
+        $alumnos = Usuario::where('tipo', 'Alumno')->get(['id', 'nombre', 'correo']);
+        return response()->json($alumnos);
+    }
+
 }

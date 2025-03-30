@@ -39,4 +39,49 @@ class ClaseController extends Controller
         return response()->json($clases);
     }
 
+    public function agregarAlumno(Request $request, $claseId)
+    {
+        // Encuentra la clase
+        $clase = Clase::findOrFail($claseId);
+
+        // Busca el alumno por nombre o ID
+        $alumno = Usuario::where('tipo', 'Alumno')
+            ->where(function ($query) use ($request) {
+                $query->where('nombre', $request->nombre)
+                    ->orWhere('id', $request->id);
+            })
+            ->first();
+
+        // Verifica si el alumno fue encontrado
+        if (!$alumno) {
+            \Log::info('Alumno no encontrado', ['nombre' => $request->nombre, 'id' => $request->id]);
+            return response()->json(['message' => 'Alumno no encontrado'], 404);
+        }
+
+        // Verifica si el alumno ya está inscrito
+        if ($clase->alumnos()->where('alumno_id', $alumno->id)->exists()) {
+            return response()->json(['message' => 'El alumno ya está inscrito'], 400);
+        }
+
+        // Intenta agregar al alumno
+        $clase->alumnos()->attach($alumno->id);
+
+        // Verifica si el alumno fue agregado correctamente
+        $alumnosInscritos = $clase->alumnos()->get();
+
+        return response()->json([
+            'message' => 'Alumno agregado correctamente',
+            'alumnos_inscritos' => $alumnosInscritos
+        ]);
+    }
+
+
+
+    public function listarAlumnos($claseId)
+    {
+        $clase = Clase::findOrFail($claseId);
+        return response()->json($clase->alumnos);
+    }
+
+
 }

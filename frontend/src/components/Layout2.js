@@ -46,16 +46,16 @@ const Navbar = ({ addClass }) => {
       setError('Todos los campos son obligatorios.');
       return;
     }
-
+  
     const newClass = {
       nombre: className,
       descripcion: description,
       codigo_grupo: classCode,
       carrera: 'Ingeniería en Tecnologías de la Información',
       cuatrimestre: cuatrimestre,
-      profesor_id: profesorId // ✅ Ahora enviamos el profesor_id
+      profesor_id: profesorId 
     };
-
+  
     try {
       const response = await fetch('http://localhost:8000/api/clases', {
         method: 'POST',
@@ -64,29 +64,45 @@ const Navbar = ({ addClass }) => {
         },
         body: JSON.stringify(newClass),
       });
-
+  
       const data = await response.json();
       
       if (!response.ok) {
         console.error('Error en la API:', data);
         throw new Error(data.message || 'Error al crear la clase');
       }
-
-      addClass(data.clase); // ✅ Agregar la clase al estado global
+  
+      console.log('Clase creada:', data.clase);
+      if (typeof addClass === 'function') {
+        addClass(data.clase); // Asegurar que `addClass` es una función antes de llamarla
+      } else {
+        console.error('addClass no es una función:', addClass);
+      }
+  
+      // Limpiar el formulario
       setClassName('');
       setDescription('');
       setClassCode('');
       setCuatrimestre('');
       setIsCreateModalOpen(false);
       setError('');
+  
+      // Redirigir al dashboard
+      navigate('/teacher/Dashboard2');
+      window.location.reload();
+
     } catch (error) {
       console.error('Error en la solicitud:', error);
       setError('No se pudo crear la clase. Inténtalo de nuevo.');
     }
   };
+  
+  
 
   const handleNavigateToDashboard = () => {
     navigate('/teacher/Dashboard2');
+    window.location.reload();
+
   };
 
   return (
@@ -131,7 +147,7 @@ const Navbar = ({ addClass }) => {
   );
 };
 
-const Layout2 = ({ children, addClass }) => {
+const Layout2 = ({ children, addClass = () => {} }) => {
   return (
     <div className="layout">
       <div className="content">
@@ -141,5 +157,6 @@ const Layout2 = ({ children, addClass }) => {
     </div>
   );
 };
+
 
 export default Layout2;

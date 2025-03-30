@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; // Eliminar Link si no se usa
+import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaPlus } from 'react-icons/fa';
 import '../styles/Layout.css';
 
@@ -7,8 +7,15 @@ const Navbar = ({ addClass }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Estados para los datos del formulario
   const [className, setClassName] = useState('');
   const [description, setDescription] = useState('');
+  const [classCode, setClassCode] = useState('');
+  const [cuatrimestre, setCuatrimestre] = useState('');
+  const [error, setError] = useState('');
+  const [profesorId, setProfesorId] = useState(1); // ⚠️ Cambia esto si obtienes el ID de otro lado
+
   const menuRef = useRef(null);
   const optionsRef = useRef(null);
   const modalRef = useRef(null);
@@ -33,18 +40,53 @@ const Navbar = ({ addClass }) => {
     };
   }, []);
 
-  const handleCreateClass = () => {
-    if (className && description) {
-      addClass({ name: className, description });
+  // 🔹 Función para crear la clase en el backend
+  const handleCreateClass = async () => {
+    if (!className || !description || !classCode || !cuatrimestre) {
+      setError('Todos los campos son obligatorios.');
+      return;
+    }
+
+    const newClass = {
+      nombre: className,
+      descripcion: description,
+      codigo_grupo: classCode,
+      carrera: 'Ingeniería en Tecnologías de la Información',
+      cuatrimestre: cuatrimestre,
+      profesor_id: profesorId // ✅ Ahora enviamos el profesor_id
+    };
+
+    try {
+      const response = await fetch('http://localhost:8000/api/clases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newClass),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error en la API:', data);
+        throw new Error(data.message || 'Error al crear la clase');
+      }
+
+      addClass(data.clase); // ✅ Agregar la clase al estado global
       setClassName('');
       setDescription('');
+      setClassCode('');
+      setCuatrimestre('');
       setIsCreateModalOpen(false);
+      setError('');
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      setError('No se pudo crear la clase. Inténtalo de nuevo.');
     }
   };
 
-  // Manejador de clic para redirigir al Dashboard.js
   const handleNavigateToDashboard = () => {
-    navigate('/teacher/Dashboard2'); // Asegúrate de que esta ruta esté definida en tu React Router
+    navigate('/teacher/Dashboard2');
   };
 
   return (
@@ -73,11 +115,12 @@ const Navbar = ({ addClass }) => {
         <div className="modal-overlay">
           <div className="modal-content" ref={modalRef}>
             <h2>Crear una clase</h2>
+            {error && <p className="error-message">{error}</p>}
             <input type="text" placeholder="Nombre de la clase" className="class-input" value={className} onChange={e => setClassName(e.target.value)} />
             <input type="text" placeholder="Descripción" className="class-input" value={description} onChange={e => setDescription(e.target.value)} />
-            <input type="text" placeholder="Código del grupo" className="class-input" />
+            <input type="text" placeholder="Código del grupo" className="class-input" value={classCode} onChange={e => setClassCode(e.target.value)} />
             <input type="text" value="Ingeniería en Tecnologías de la Información" className="class-input" readOnly />
-            <input type="text" placeholder="Cuatrimestre" className="class-input" />
+            <input type="text" placeholder="Cuatrimestre" className="class-input" value={cuatrimestre} onChange={e => setCuatrimestre(e.target.value)} />
             <div className="modal-buttons">
               <button className="cancel-button" onClick={() => setIsCreateModalOpen(false)}>Cancelar</button>
               <button className="create-button" onClick={handleCreateClass}>Crear</button>

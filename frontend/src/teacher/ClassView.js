@@ -9,8 +9,9 @@ const ClassView = ({ classCode, className, classDescription }) => {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskInstructions, setTaskInstructions] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [editingTaskIndex, setEditingTaskIndex] = useState(null);
-  const [editingAnnouncementIndex, setEditingAnnouncementIndex] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [newStudent, setNewStudent] = useState('');
+  const [announcementFile, setAnnouncementFile] = useState(null);
 
   const formatDate = (date) => {
     const options = { day: 'numeric', month: 'long' };
@@ -18,29 +19,29 @@ const ClassView = ({ classCode, className, classDescription }) => {
   };
 
   const handleCreateAnnouncement = () => {
-    if (announcementText) {
-      const newAnnouncement = { text: announcementText, date: formatDate(new Date()) };
+    if (announcementText || announcementFile) {
+      const newAnnouncement = { 
+        text: announcementText, 
+        date: formatDate(new Date()),
+        file: announcementFile
+      };
       setAnnouncements([...announcements, newAnnouncement]);
       setAnnouncementText('');
+      setAnnouncementFile(null);
     }
   };
 
-  const handleEditAnnouncement = (index) => {
-    setAnnouncementText(announcements[index].text);
-    setEditingAnnouncementIndex(index);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setAnnouncementFile(file);
+    }
   };
 
-  const handleUpdateAnnouncement = () => {
-    if (announcementText && editingAnnouncementIndex !== null) {
-      const updatedAnnouncements = [...announcements];
-      updatedAnnouncements[editingAnnouncementIndex] = { 
-        ...updatedAnnouncements[editingAnnouncementIndex],
-        text: announcementText, 
-        lastModified: formatDate(new Date()) 
-      };
-      setAnnouncements(updatedAnnouncements);
-      setAnnouncementText('');
-      setEditingAnnouncementIndex(null);
+  const handleAddStudent = () => {
+    if (newStudent) {
+      setStudents([...students, newStudent]);
+      setNewStudent('');
     }
   };
 
@@ -59,32 +60,6 @@ const ClassView = ({ classCode, className, classDescription }) => {
     }
   };
 
-  const handleEditTask = (index) => {
-    const task = tasks[index];
-    setTaskTitle(task.title);
-    setTaskInstructions(task.instructions);
-    setDueDate(task.dueDate);
-    setEditingTaskIndex(index);
-  };
-
-  const handleUpdateTask = () => {
-    if (taskTitle && taskInstructions && dueDate && editingTaskIndex !== null) {
-      const updatedTasks = [...tasks];
-      updatedTasks[editingTaskIndex] = { 
-        ...updatedTasks[editingTaskIndex],
-        title: taskTitle, 
-        instructions: taskInstructions, 
-        dueDate,
-        lastModified: formatDate(new Date()) 
-      };
-      setTasks(updatedTasks);
-      setTaskTitle('');
-      setTaskInstructions('');
-      setDueDate('');
-      setEditingTaskIndex(null);
-    }
-  };
-
   return (
     <Layout2>
       <div className="class-view">
@@ -99,6 +74,22 @@ const ClassView = ({ classCode, className, classDescription }) => {
           </div>
         </div>
 
+        <section className="students">
+          <h2>Alumnos</h2>
+          <input 
+            type="text" 
+            placeholder="Nombre del alumno" 
+            value={newStudent} 
+            onChange={(e) => setNewStudent(e.target.value)} 
+          />
+          <button onClick={handleAddStudent}>Agregar Alumno</button>
+          <ul>
+            {students.map((student, index) => (
+              <li key={index}>{student}</li>
+            ))}
+          </ul>
+        </section>
+
         <section className="announcements">
           <h2>Anuncios</h2>
           <textarea
@@ -106,20 +97,20 @@ const ClassView = ({ classCode, className, classDescription }) => {
             value={announcementText}
             onChange={(e) => setAnnouncementText(e.target.value)}
           />
-          {editingAnnouncementIndex !== null ? (
-            <button onClick={handleUpdateAnnouncement}>Actualizar Anuncio</button>
-          ) : (
-            <button onClick={handleCreateAnnouncement}>Crear Anuncio</button>
-          )}
+          <input type="file" accept="*/*" onChange={handleFileChange} />
+          <button onClick={handleCreateAnnouncement}>Crear Anuncio</button>
           <ul>
             {announcements.map((announcement, index) => (
               <li key={index} className="announcement-item">
                 <div className="announcement-header">
                   <span>{announcement.date}</span>
-                  {announcement.lastModified && <span> (Última modificación: {announcement.lastModified})</span>}
                 </div>
                 <p>{announcement.text}</p>
-                <button onClick={() => handleEditAnnouncement(index)}>Editar</button>
+                {announcement.file && (
+                  <a href={URL.createObjectURL(announcement.file)} download>
+                    Descargar archivo adjunto ({announcement.file.name})
+                  </a>
+                )}
               </li>
             ))}
           </ul>
@@ -143,24 +134,18 @@ const ClassView = ({ classCode, className, classDescription }) => {
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
           />
-          {editingTaskIndex !== null ? (
-            <button onClick={handleUpdateTask}>Actualizar Tarea</button>
-          ) : (
-            <button onClick={handleCreateTask}>Crear Tarea</button>
-          )}
+          <button onClick={handleCreateTask}>Crear Tarea</button>
           <ul>
             {tasks.map((task, index) => (
               <li key={index} className="task-item">
                 <div className="task-header">
                   <span>{task.date}</span>
-                  {task.lastModified && <span> (Última modificación: {task.lastModified})</span>}
                 </div>
                 <div className="task-content">
                   <h3>{task.title}</h3>
                   <p>{task.instructions}</p>
                   <p><strong>Fecha de entrega:</strong> {task.dueDate}</p>
                 </div>
-                <button onClick={() => handleEditTask(index)}>Editar</button>
               </li>
             ))}
           </ul>

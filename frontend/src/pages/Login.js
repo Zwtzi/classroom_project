@@ -19,10 +19,13 @@ const Login = () => {
         contrasena: password
       });
 
-      // Suponemos que la respuesta incluye el tipo de usuario (Alumno, Profesor, Administrador)
-      const { tipo } = response.data;
+      // Obtenemos todos los datos del usuario
+      const { id, nombre, correo, tipo } = response.data;
 
-      // Redirigir al dashboard correspondiente
+      // Guardamos el usuario en el localStorage
+      localStorage.setItem('user', JSON.stringify({ id, nombre, correo, tipo }));
+
+      // Redirigir al dashboard correspondiente según el tipo de usuario
       if (tipo === 'Alumno') {
         navigate('/student/dashboard');
       } else if (tipo === 'Profesor') {

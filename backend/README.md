@@ -5,3 +5,6 @@ git reset --hard origin/backend_zwtzi
 
 **Descartar cambios**
 git clean -fd
+
+**Ejecutar seeders**
+php artisan db:seed

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaseController;
+use App\Http\Controllers\ClaseAlumnoController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -20,3 +21,5 @@ Route::get('/alumnos', [UsuarioController::class, 'getAlumnos']);
 
 
 Route::post('login', [AuthController::class, 'login']);
+Route::post('/clase-alumno', [ClaseAlumnoController::class, 'store']); // Agregar alumno a una clase
+Route::delete('/clase-alumno/{id}', [ClaseAlumnoController::class, 'destroy']); // Eliminar alumno de una clase

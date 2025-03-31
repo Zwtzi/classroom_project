@@ -15,7 +15,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/student/dashboard" element={<Dashboard />} />
           <Route path="/teacher/dashboard2" element={<Dashboard2 />} />
-          <Route path="/class/:classCode" element={<ClassView />} />
+          <Route path="/class/:classCode" element={<ClassView />} /> {/* classCode desde URL */}
         </Routes>
       </div>
     </Router>

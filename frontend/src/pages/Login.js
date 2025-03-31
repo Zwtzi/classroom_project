@@ -37,33 +37,48 @@ const Login = () => {
   };
 
   return (
-      <div className="auth-container">
-        <h2>Iniciar sesión</h2>
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="input-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input
+    <div className="login-container">
+      <div className="login-left">
+        <div className="vector-image">
+          <img 
+            src="/student.png" 
+            alt="Imagen" 
+            className="vector-img"
+          />
+        </div>
+      </div>
+      <div className="login-right">
+        <div className="auth-container">
+          <h2>Iniciar sesión</h2>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="input-group">
+              <label htmlFor="email">Correo electrónico</label>
+              <input
                 type="email"
                 id="email"
+                placeholder="Escriba su correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="password">Contraseña</label>
+              <input
                 type="password"
                 id="password"
+                placeholder="Escriba su contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-            />
-          </div>
-          <button type="submit" className="btn">Iniciar sesión</button>
-          {error && <p className="error-message">{error}</p>} {/* Mostrar mensaje de error */}
-        </form>
+              />
+            </div>
+            <button type="submit" className="btn">Entrar</button>
+            {error && <p className="error-message">{error}</p>} {/* Mostrar mensaje de error */}
+          </form>
+        </div>
       </div>
+    </div>
   );
 };
 

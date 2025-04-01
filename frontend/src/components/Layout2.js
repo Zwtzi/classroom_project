@@ -14,12 +14,22 @@ const Navbar = ({ addClass }) => {
   const [classCode, setClassCode] = useState('');
   const [cuatrimestre, setCuatrimestre] = useState('');
   const [error, setError] = useState('');
-  const [profesorId, setProfesorId] = useState(1); // ⚠️ Cambia esto si obtienes el ID de otro lado
+
+  // Obtener los datos del usuario desde localStorage
+  const [userData, setUserData] = useState(null);
 
   const menuRef = useRef(null);
   const optionsRef = useRef(null);
   const modalRef = useRef(null);
   const navigate = useNavigate();
+
+  // Cargar los datos del usuario desde localStorage cuando se monta el componente
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      setUserData(user);
+    }
+  }, []);
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -53,7 +63,7 @@ const Navbar = ({ addClass }) => {
       codigo_grupo: classCode,
       carrera: 'Ingeniería en Tecnologías de la Información',
       cuatrimestre: cuatrimestre,
-      profesor_id: profesorId 
+      profesor_id: userData?.id, // Usar el id del usuario que está logueado
     };
   
     try {
@@ -66,22 +76,30 @@ const Navbar = ({ addClass }) => {
       });
   
       const data = await response.json();
-      
+
       if (!response.ok) {
         console.error('Error en la API:', data);
         throw new Error(data.message || 'Error al crear la clase');
       }
-  
-      addClass(data.clase);
+
+      console.log('Clase creada:', data.clase);
+      if (typeof addClass === 'function') {
+        addClass(data.clase); // Asegurar que `addClass` es una función antes de llamarla
+      } else {
+        console.error('addClass no es una función:', addClass);
+      }
+
+      // Limpiar el formulario
       setClassName('');
       setDescription('');
       setClassCode('');
       setCuatrimestre('');
       setIsCreateModalOpen(false);
       setError('');
-      
-      window.location.reload(); // 🔄 Refrescar la página después de la creación exitosa
-  
+
+      // Redirigir al dashboard
+      navigate('/teacher/Dashboard2');
+      window.location.reload();
     } catch (error) {
       console.error('Error en la solicitud:', error);
       setError('No se pudo crear la clase. Inténtalo de nuevo.');
@@ -90,24 +108,43 @@ const Navbar = ({ addClass }) => {
 
   const handleNavigateToDashboard = () => {
     navigate('/teacher/Dashboard2');
+    window.location.reload();
+  };
+
+  const handleLogout = () => {
+    // Eliminar los datos del usuario de localStorage y redirigir al login
+    localStorage.removeItem('user');
+    navigate('/');
   };
 
   return (
     <>
       <nav className="navbar">
         <div className="navbar-container">
-          <h1 className="navbar-brand" onClick={handleNavigateToDashboard}>CLASSROOM</h1>
+          <h1 className="navbar-brand" onClick={handleNavigateToDashboard}>
+            CLASSROOM
+          </h1>
           <div className="navbar-links">
             <FaPlus className="menu-icon plus-icon" onClick={() => setIsOptionsOpen(!isOptionsOpen)} />
             {isOptionsOpen && (
               <div className="options-menu" ref={optionsRef}>
-                <button onClick={() => { setIsCreateModalOpen(true); setIsOptionsOpen(false); }}>Crear una clase</button>
+                <button
+                  onClick={() => {
+                    setIsCreateModalOpen(true);
+                    setIsOptionsOpen(false);
+                  }}
+                >
+                  Crear una clase
+                </button>
               </div>
             )}
             <FaUserCircle className="menu-icon user-icon" onClick={() => setIsMenuOpen(!isMenuOpen)} />
-            {isMenuOpen && (
+            {isMenuOpen && userData && (
               <div className="user-menu" ref={menuRef}>
-                <button className="logout-button" onClick={() => navigate('/')}>Cerrar sesión</button>
+                <p>Hola, {userData.nombre}</p> {/* Mostrar el nombre del usuario */}
+                <button className="logout-button" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
               </div>
             )}
           </div>
@@ -118,15 +155,42 @@ const Navbar = ({ addClass }) => {
         <div className="modal-overlay">
           <div className="modal-content" ref={modalRef}>
             <h2>Crear una clase</h2>
-            {error && <p className="error-message">{error}</p>}
-            <input type="text" placeholder="Nombre de la clase" className="class-input" value={className} onChange={e => setClassName(e.target.value)} />
-            <input type="text" placeholder="Descripción" className="class-input" value={description} onChange={e => setDescription(e.target.value)} />
-            <input type="text" placeholder="Código del grupo" className="class-input" value={classCode} onChange={e => setClassCode(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Nombre de la clase"
+              className="class-input"
+              value={className}
+              onChange={(e) => setClassName(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              className="class-input"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Código del grupo"
+              className="class-input"
+              value={classCode}
+              onChange={(e) => setClassCode(e.target.value)}
+            />
             <input type="text" value="Ingeniería en Tecnologías de la Información" className="class-input" readOnly />
-            <input type="text" placeholder="Cuatrimestre" className="class-input" value={cuatrimestre} onChange={e => setCuatrimestre(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Cuatrimestre"
+              className="class-input"
+              value={cuatrimestre}
+              onChange={(e) => setCuatrimestre(e.target.value)}
+            />
             <div className="modal-buttons">
-              <button className="cancel-button" onClick={() => setIsCreateModalOpen(false)}>Cancelar</button>
-              <button className="create-button" onClick={handleCreateClass}>Crear</button>
+              <button className="cancel-button" onClick={() => setIsCreateModalOpen(false)}>
+                Cancelar
+              </button>
+              <button className="create-button" onClick={handleCreateClass}>
+                Crear
+              </button>
             </div>
           </div>
         </div>
@@ -135,13 +199,7 @@ const Navbar = ({ addClass }) => {
   );
 };
 
-const Layout2 = ({ children }) => {
-  const [clases, setClases] = useState([]); // Estado global de clases
-
-  const addClass = (newClass) => {
-    setClases((prevClases) => [...prevClases, newClass]); // Agregar la nueva clase al estado
-  };
-
+const Layout2 = ({ children, addClass = () => {} }) => {
   return (
     <div className="layout">
       <div className="content">

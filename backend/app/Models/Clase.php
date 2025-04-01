@@ -36,4 +36,11 @@ class Clase extends Model
     {
         return $this->hasMany(Tema::class);
     }
+
+    public function alumnos()
+    {
+        return $this->belongsToMany(Usuario::class, 'clase_alumno', 'clase_id', 'alumno_id');
+    }
+
+
 }

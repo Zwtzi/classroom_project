@@ -19,4 +19,11 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Clase::class, 'profesor_id');
     }
+
+    public function clasesComoAlumno()
+    {
+        return $this->belongsToMany(Clase::class, 'clase_alumno', 'alumno_id', 'clase_id');
+    }
+
+
 }

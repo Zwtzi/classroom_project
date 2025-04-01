@@ -16,13 +16,19 @@ class AuthController extends Controller
             'contrasena' => 'required|min:6',
         ]);
 
+        // Buscar al usuario por correo
         $usuario = Usuario::where('correo', $request->correo)->first();
 
         // Verificar si el usuario existe y la contraseña es correcta
         if ($usuario && Hash::check($request->contrasena, $usuario->contrasena)) {
-            // Devolver el tipo de usuario
+            // Devolver todos los datos del usuario
             return response()->json([
-                'tipo' => $usuario->tipo
+                'id' => $usuario->id,
+                'nombre' => $usuario->nombre,
+                'correo' => $usuario->correo,
+                'tipo' => $usuario->tipo,
+                'created_at' => $usuario->created_at,
+                'updated_at' => $usuario->updated_at
             ]);
         }
 

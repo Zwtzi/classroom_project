@@ -27,3 +27,4 @@ Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos'
 Route::post('login', [AuthController::class, 'login']);
 Route::post('/clasealumno', [ClaseAlumnoController::class, 'store']); // Agregar alumno a una clase
 Route::delete('/clasealumno/{id}', [ClaseAlumnoController::class, 'destroy']); // Eliminar alumno de una clase
+Route::get('/alumnos/{alumnoId}/clases', [ClaseAlumnoController::class, 'clasesPorAlumno']);

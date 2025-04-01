@@ -25,4 +25,5 @@ class Usuario extends Authenticatable
         return $this->belongsToMany(Clase::class, 'clase_alumno', 'alumno_id', 'clase_id');
     }
 
+
 }

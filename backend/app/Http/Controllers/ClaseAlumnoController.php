@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ClaseAlumno;
+use App\Models\Usuario;
+use App\Models\Clase;
 use Illuminate\Database\QueryException;
 
 class ClaseAlumnoController extends Controller
@@ -25,8 +28,7 @@ class ClaseAlumnoController extends Controller
 
             return response()->json(['message' => 'Alumno agregado a la clase', 'data' => $claseAlumno], 201);
         } catch (QueryException $e) {
-            // Verificamos si el error es por la restricción única
-            if ($e->errorInfo[1] == 1062) { // Código de error para entradas duplicadas en MySQL
+            if ($e->errorInfo[1] == 1062) { // Restricción única en MySQL
                 return response()->json(['message' => 'Este alumno ya está inscrito en esta clase'], 400);
             }
 
@@ -46,7 +48,24 @@ class ClaseAlumnoController extends Controller
         }
 
         $claseAlumno->delete();
-
         return response()->json(['message' => 'Alumno eliminado de la clase']);
     }
+
+    /**
+     * Obtener las clases en las que está inscrito un alumno.
+     */
+    public function clasesPorAlumno($alumnoId)
+    {
+        $alumno = Usuario::with('clasesComoAlumno')->find($alumnoId);
+
+        if (!$alumno) {
+            return response()->json(['message' => 'Alumno no encontrado'], 404);
+        }
+
+        return response()->json($alumno->clasesComoAlumno);
+    }
+
+
+
+
 }

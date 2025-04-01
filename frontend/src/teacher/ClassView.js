@@ -8,6 +8,10 @@ const ClassView = () => {
   const { classCode } = useParams(); // Obtener classCode desde la URL
   const [students, setStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
+  const availableFilteredStudents = availableStudents.filter(
+    (student) => !students.some((s) => s.id === student.id)
+  );
+
   const [selectedStudent, setSelectedStudent] = useState('');
 
   useEffect(() => {
@@ -46,10 +50,11 @@ const ClassView = () => {
         <h2>Alumnos en la Clase {classCode}</h2>
         <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
           <option value="">Selecciona un alumno</option>
-          {availableStudents.map((student) => (
+          {availableFilteredStudents.map((student) => (
             <option key={student.id} value={student.id}>{student.nombre}</option>
           ))}
         </select>
+
         <button onClick={handleAddStudent}>Agregar Alumno</button>
         <ul>
           {students.map((student, index) => (

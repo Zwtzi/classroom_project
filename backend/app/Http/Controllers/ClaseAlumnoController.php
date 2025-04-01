@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ClaseAlumno;
+use Illuminate\Database\QueryException;
 
 class ClaseAlumnoController extends Controller
 {
@@ -17,12 +17,21 @@ class ClaseAlumnoController extends Controller
             'alumno_id' => 'required|exists:usuarios,id',
         ]);
 
-        $claseAlumno = ClaseAlumno::create([
-            'clase_id' => $request->clase_id,
-            'alumno_id' => $request->alumno_id,
-        ]);
+        try {
+            $claseAlumno = ClaseAlumno::create([
+                'clase_id' => $request->clase_id,
+                'alumno_id' => $request->alumno_id,
+            ]);
 
-        return response()->json(['message' => 'Alumno agregado a la clase', 'data' => $claseAlumno], 201);
+            return response()->json(['message' => 'Alumno agregado a la clase', 'data' => $claseAlumno], 201);
+        } catch (QueryException $e) {
+            // Verificamos si el error es por la restricción única
+            if ($e->errorInfo[1] == 1062) { // Código de error para entradas duplicadas en MySQL
+                return response()->json(['message' => 'Este alumno ya está inscrito en esta clase'], 400);
+            }
+
+            return response()->json(['message' => 'Error al agregar alumno'], 500);
+        }
     }
 
     /**

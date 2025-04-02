@@ -16,4 +16,9 @@ class Aviso extends Model
     {
         return $this->belongsTo(Clase::class);
     }
+
+    public function anexos()
+    {
+        return $this->hasMany(Anexo::class);
+    }
 }

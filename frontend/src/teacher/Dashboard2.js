@@ -35,14 +35,27 @@ const Dashboard2 = () => {
     <Layout2>
       <div className="dashboard-container">
         {classes.map((classItem, index) => (
-          <div key={index} className="class-card" onClick={() => handleClassClick(classItem.codigo_grupo)}>
-            <div className="card-header">
-              <h3>{classItem.nombre}</h3>
-              <span className="menu-icon" onClick={(e) => { e.stopPropagation(); toggleMenu(index); }}>
-                &#x22EE;
-              </span>
+          <div 
+            key={index} 
+            className="class-card" 
+            onClick={() => handleClassClick(classItem.codigo_grupo)}
+          >
+            <div className="card-content">
+              <div className="text-content">
+                <h3>{classItem.nombre}</h3>
+                <p>{classItem.descripcion}</p>
+              </div>
+              <span className="user-icon">&#128100;</span>
             </div>
-            <p>{classItem.descripcion}</p>
+            <span 
+              className="menu-icon" 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                toggleMenu(index); 
+              }}
+            >
+              &#x22EE;
+            </span>
             {showMenu === index && (
               <div className="menu-modal">
                 <button className="cancel-button">

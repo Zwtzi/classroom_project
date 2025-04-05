@@ -6,29 +6,50 @@
   }
   
   .class-card {
-    background-color: #ecf0f1;
-    padding: 15px;
-    border-radius: 10px;
+    background-color: #f9faf5; /* Blanco verdoso, en línea con login y register */
+    padding: 20px;
+    border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+    position: relative;
+    min-height: 150px;
+    cursor: pointer;
   }
   
   .class-card:hover {
     transform: translateY(-10px);
   }
   
-  .class-card h3 {
-    margin: 0 0 10px 0;
-    color: #2c3e50;
+  /* Contenedor interno para distribuir texto y icono */
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .class-card p {
+  /* Estilos para el contenido textual */
+  .text-content h3 {
+    margin: 0 0 10px 0;
+    color: #2e7d32; /* Verde minimalista */
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  .text-content p {
     margin: 0;
     color: #7f8c8d;
+    font-size: 16px;
   }
   
-  .class-card .menu-icon {
-    position: absolute;
+  /* Icono de usuario */
+  .user-icon {
+    font-size: 96px;
+    color: #2e7d32;
+  }
+  
+  /* Ícono del menú contextual */
+  .menu-icon {
+    /*position: absolute; */
     top: 10px;
     right: 10px;
     cursor: pointer;
@@ -49,7 +70,7 @@
   }
   
   .cancel-button {
-    background-color: #e74c3c;
+    background-color: #e77e3c;
     color: white;
     padding: 10px 20px;
     border: none;

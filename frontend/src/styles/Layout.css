@@ -25,13 +25,13 @@
 
 .menu-icon {
   cursor: pointer;
-  width: 24px;
+  /* width: 24px; */
   height: 24px;
 }
 
 .user-icon, .plus-icon {
   cursor: pointer;
-  width: 24px;
+  /* width: 24px; */
   height: 24px;
   margin-top: 10px;
 }

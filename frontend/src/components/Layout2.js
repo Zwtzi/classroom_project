@@ -56,7 +56,7 @@ const Navbar = ({ addClass }) => {
       setError('Todos los campos son obligatorios.');
       return;
     }
-
+  
     const newClass = {
       nombre: className,
       descripcion: description,
@@ -65,7 +65,7 @@ const Navbar = ({ addClass }) => {
       cuatrimestre: cuatrimestre,
       profesor_id: userData?.id, // Usar el id del usuario que está logueado
     };
-
+  
     try {
       const response = await fetch('http://localhost:8000/api/clases', {
         method: 'POST',
@@ -74,7 +74,7 @@ const Navbar = ({ addClass }) => {
         },
         body: JSON.stringify(newClass),
       });
-
+  
       const data = await response.json();
 
       if (!response.ok) {
@@ -104,7 +104,7 @@ const Navbar = ({ addClass }) => {
       console.error('Error en la solicitud:', error);
       setError('No se pudo crear la clase. Inténtalo de nuevo.');
     }
-  };
+  };  
 
   const handleNavigateToDashboard = () => {
     navigate('/teacher/Dashboard2');

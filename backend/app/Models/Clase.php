@@ -43,5 +43,4 @@ class Clase extends Model
     }
 
 
-
 }

@@ -16,6 +16,9 @@ class CreateClaseAlumnoTable extends Migration
 
             $table->foreign('clase_id')->references('id')->on('clases')->onDelete('cascade');
             $table->foreign('alumno_id')->references('id')->on('usuarios')->onDelete('cascade');
+            
+            // Agregar restricción única para evitar registros duplicados
+            $table->unique(['clase_id', 'alumno_id']);
         });
     }
 

@@ -10,7 +10,12 @@ class Tarea extends Model
     use HasFactory;
 
     protected $table = 'tareas';
-    protected $fillable = ['titulo', 'instrucciones', 'clase_id', 'fecha_limite'];
+    protected $fillable = ['titulo', 'instrucciones', 'clase_id', 'fecha_limite', 'tema_id'];
+
+    public function tema()
+    {
+        return $this->belongsTo(Tema::class);
+    }
 
     public function clase()
     {

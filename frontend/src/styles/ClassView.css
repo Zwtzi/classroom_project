@@ -69,7 +69,15 @@
     margin-top: 20px;
     width: 80%;
 }
-  
+
+.avisos-section h2{
+  color: #339946;
+}
+
+.avisos-section h4{
+  color: #339946;
+}
+
 .aviso-input-container {
   display: flex;
   align-items: center;
@@ -92,6 +100,24 @@
   gap: 10px;
 }
 
+.aviso-form input {
+  font-size: 1.2rem;
+  font-weight: bold;
+  resize: vertical;
+  border-radius: 12px;
+  border: 2px solid #339946;
+  padding: 15px;
+  background-color: #f8fbef;
+  color: #339946;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.aviso-form input:focus {
+border-color: #2b7a39;
+}
+
 .aviso-form textarea {
     font-size: 1.2rem;
     font-weight: bold;
@@ -108,6 +134,44 @@
   
 .aviso-form textarea:focus {
   border-color: #2b7a39;
+}
+
+.aviso-form select {
+  font-size: 1.2rem;
+  font-weight: bold;
+  resize: vertical;
+  border-radius: 12px;
+  border: 2px solid #339946;
+  padding: 15px;
+  background-color: #f8fbef;
+  color: #339946;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.aviso-form select:focus {
+border-color: #2b7a39;
+}
+
+.aviso-form option {
+  font-size: 1.2rem;
+  font-weight: bold;
+  resize: vertical;
+  border-radius: 12px;
+  border: 2px solid #339946;
+  padding: 15px;
+  background-color: #f8fbef;
+  color: #339946;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.aviso-form option:hover {
+  background: #dff5cd
 }
 
 .aviso-actions {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaPlus } from 'react-icons/fa';
 import '../styles/Layout.css';
 
 const Navbar = ({ addClass }) => {

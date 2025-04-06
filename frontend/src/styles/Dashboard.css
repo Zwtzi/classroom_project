@@ -14,7 +14,7 @@
     position: relative;
     min-height: 150px;
     cursor: pointer;
-    width: 120%;
+    width: 150%;
   }
   
   .class-card:hover {
@@ -43,25 +43,29 @@
   }
 
   .text-content h3 {
-    width: 100px;
+    width: 137%;
     color: #87F29B;
     font-size: 32px;
     font-style: normal;
     line-height: normal;
     font-weight: 700;
-    margin-top: -50px;
+    margin-top: -35px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   }
 
   .text-content p {
     margin: 0;
     color: #87F29B;
     font-size: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   /* Icono de usuario */
   .usercard-icon {
     color: #2e7d32;
-    margin-top: 50px;
+    margin-top: 30px;
   }
   
   /* Ícono del menú contextual */

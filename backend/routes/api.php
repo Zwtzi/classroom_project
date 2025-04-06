@@ -7,6 +7,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\ClaseAlumnoController;
 use App\Http\Controllers\AvisoController;
+use App\Http\Controllers\TareaController;
+use App\Http\Controllers\TemaController;
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -31,3 +34,11 @@ Route::get('/alumnos/{alumnoId}/clases', [ClaseAlumnoController::class, 'clasesP
 
 Route::get('/clases/{clase_id}/avisos', [AvisoController::class, 'index']); // Obtener avisos
 Route::post('/clases/{clase_id}/avisos', [AvisoController::class, 'store']); // Crear avisos con anexos
+
+Route::get('/clases/{codigo_grupo}/temas', [TemaController::class, 'index']);
+Route::post('/clases/{codigo_grupo}/temas', [TemaController::class, 'store']);
+
+Route::get('/clases/{codigo_grupo}/tareas', [TareaController::class, 'index']);
+Route::post('/clases/{codigo_grupo}/tareas', [TareaController::class, 'store']);
+
+

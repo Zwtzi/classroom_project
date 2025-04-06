@@ -12,6 +12,17 @@ const ClassView = () => {
   const [avisos, setAvisos] = useState([]);
   const [nuevoAviso, setNuevoAviso] = useState('');
   const [archivos, setArchivos] = useState([]);
+  const [temas, setTemas] = useState([]);
+  const [nuevoTema, setNuevoTema] = useState({ nombre: '', descripcion: '' });
+  const [nuevaTarea, setNuevaTarea] = useState({
+    titulo: '',
+    instrucciones: '',
+    fecha_limite: '',
+    tema_id: ''
+  });
+  const [tareas, setTareas] = useState([]);
+  
+
 
   useEffect(() => {
     // Obtener alumnos de la clase
@@ -28,6 +39,16 @@ const ClassView = () => {
     axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/avisos`)
       .then(response => setAvisos(response.data))
       .catch(error => console.error("Error al obtener avisos:", error));
+
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/temas`)
+      .then(response => setTemas(response.data))
+      .catch(error => console.error("Error al obtener temas:", error));
+
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/tareas`)
+      .then(response => setTareas(response.data))
+      .catch(error => console.error("Error al obtener tareas:", error));
+    
+
   }, [classCode]);
 
   const handleAddStudent = () => {
@@ -135,47 +156,97 @@ const ClassView = () => {
           />
           <button type="submit" className="submit-button">Publicar Aviso</button>
         </div>
-        </form>
+
+        {/* Lista de Temas */}
+        <div className="temas-section">
+          <h2>Temas</h2>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/temas`, nuevoTema)
+              .then(res => {
+                setTemas([res.data, ...temas]);
+                setNuevoTema({ nombre: '', descripcion: '' });
+              })
+              .catch(err => console.error("Error al crear tema:", err));
+          }}>
+            <input
+              type="text"
+              placeholder="Nombre del tema"
+              value={nuevoTema.nombre}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, nombre: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Descripción del tema"
+              value={nuevoTema.descripcion}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, descripcion: e.target.value })}
+            />
+            <button type="submit">Crear Tema</button>
+          </form>
+
+          <ul>
+            {temas.map((tema) => (
+              <li key={tema.id}>
+                <strong>{tema.nombre}</strong> - {tema.descripcion}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <ul className="avisos-list">
-        {avisos.map(aviso => (
-          <li key={aviso.id} className="aviso-item">
-            <div className="aviso-header">
-              <div className="avatar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 129 129" fill="none">
-                  <circle cx="64.5" cy="64.5" r="64.5" fill="#2C943F"/>
-                  <path d="M64.7077 61.7418C77.339 61.7418 87.5786 51.5022 87.5786 38.8709C87.5786 26.2397 77.339 16 64.7077 16C52.0765 16 41.8368 26.2397 41.8368 38.8709C41.8368 51.5022 52.0765 61.7418 64.7077 61.7418Z" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M104 101.581C104 83.8791 86.3893 69.5619 64.7077 69.5619C43.0261 69.5619 25.4155 83.8791 25.4155 101.581" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div className="aviso-user-info">
-                <strong className="aviso-nombre">{aviso.usuario?.nombre || 'Nombre del Usuario'}</strong>
-                <span className="aviso-fecha">{new Date(aviso.created_at).toLocaleString()}</span>
-              </div>
-            </div>
-        
-            <p className="aviso-contenido">{aviso.contenido}</p>
-        
-            {aviso.anexos && aviso.anexos.length > 0 && (
-              <div className="aviso-archivos">
-                <h4>Archivos Adjuntos:</h4>
-                <ul>
-                  {aviso.anexos.map(anexo => (
-                    <li key={anexo.id}>
-                      <a href={`http://127.0.0.1:8000/storage/${anexo.ruta_archivo}`} target="_blank" rel="noopener noreferrer">
-                        {anexo.ruta_archivo.endsWith('.pdf') ? 'Ver PDF' : 'Ver Imagen'}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </li>
-        ))}
-        </ul>
-      </div>
-      </div>
+        {/* Forms de tareas */}
+        <div className="tareas-section">
+          <h2>Tareas</h2>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/tareas`, nuevaTarea)
+              .then(res => {
+                setTareas([res.data, ...tareas]);
+                setNuevaTarea({ titulo: '', instrucciones: '', fecha_limite: '', tema_id: '' });
+              })
+              .catch(err => console.error("Error al crear tarea:", err));
+          }}>
+            <input
+              type="text"
+              placeholder="Título de la tarea"
+              value={nuevaTarea.titulo}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, titulo: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Instrucciones"
+              value={nuevaTarea.instrucciones}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, instrucciones: e.target.value })}
+            />
+            <input
+              type="datetime-local"
+              value={nuevaTarea.fecha_limite}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, fecha_limite: e.target.value })}
+              required
+            />
+            <select
+              value={nuevaTarea.tema_id}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, tema_id: e.target.value })}
+            >
+              <option value="">Sin tema</option>
+              {temas.map((tema) => (
+                <option key={tema.id} value={tema.id}>{tema.nombre}</option>
+              ))}
+            </select>
+            <button type="submit">Crear Tarea</button>
+          </form>
+
+          {/* Lista de tareas existentes */}
+          <ul>
+            {tareas.map((tarea) => (
+              <li key={tarea.id}>
+                <strong>{tarea.titulo}</strong> - {tarea.instrucciones}<br/>
+                <small>Fecha límite: {new Date(tarea.fecha_limite).toLocaleString()}</small><br/>
+                {tarea.tema && <em>Tema: {tarea.tema.nombre}</em>}
+              </li>
+            ))}
+          </ul>
+        </div>
+
       </div>
     </Layout2>
   );

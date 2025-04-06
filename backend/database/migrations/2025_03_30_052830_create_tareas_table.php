@@ -13,10 +13,12 @@ class CreateTareasTable extends Migration
             $table->string('titulo');
             $table->text('instrucciones');
             $table->unsignedBigInteger('clase_id'); // Relación con la clase
+            $table->unsignedBigInteger('tema_id')->nullable(); // NUEVO: Relación con el tema
             $table->dateTime('fecha_limite');
             $table->timestamps();
 
             $table->foreign('clase_id')->references('id')->on('clases')->onDelete('cascade');
+            $table->foreign('tema_id')->references('id')->on('temas')->onDelete('set null'); // NUEVO
         });
     }
 

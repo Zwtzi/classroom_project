@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Tarea;
 use App\Models\Clase;
 use App\Models\Tema;
+use App\Models\Aviso;  // Importamos el modelo Aviso
 
 class TareaController extends Controller
 {
@@ -48,6 +49,7 @@ class TareaController extends Controller
             return response()->json(['error' => 'El tema no pertenece a esta clase'], 400);
         }
 
+        // Crear la tarea
         $tarea = \App\Models\Tarea::create([
             'titulo' => $request->titulo,
             'instrucciones' => $request->instrucciones,
@@ -56,7 +58,12 @@ class TareaController extends Controller
             'tema_id' => $tema->id
         ]);
 
+        // Crear un aviso relacionado con la tarea
+        Aviso::create([
+            'clase_id' => $clase->id,
+            'contenido' => 'Nueva tarea publicada: ' . $tarea->titulo,
+        ]);
+
         return response()->json($tarea, 201);
     }
-
 }

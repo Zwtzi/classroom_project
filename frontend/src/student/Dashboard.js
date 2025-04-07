@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [clases, setClases] = useState([]);
@@ -43,11 +44,15 @@ const Dashboard = () => {
         <h2>Bienvenido al Dashboard</h2>
         <p>Aquí puedes ver todas las clases en las que estás inscrito:</p>
         {clases.length > 0 ? (
-          <ul>
-            {clases.map(clase => (
-              <li key={clase.id}>{clase.nombre} - {clase.codigo_grupo}</li>
-            ))}
-          </ul>
+            <ul>
+              {clases.map(clase => (
+                  <li key={clase.id}>
+                    <Link to={`/student/class/${clase.id}`}>
+                      {clase.nombre} - {clase.codigo_grupo}
+                    </Link>
+                  </li>
+              ))}
+            </ul>
         ) : (
           <p>{alumnoId === null ? "Cargando..." : "No estás inscrito en ninguna clase."}</p>
         )}

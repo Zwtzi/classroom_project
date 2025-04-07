@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::post('/clases', [ClaseController::class, 'store']);
+Route::post('/clasealumno', [ClaseAlumnoController::class, 'store']);
 Route::get('/clases', [ClaseController::class, 'index']);
 
 Route::post('/clases/{claseId}/agregaralumno',  [ClaseController::class, 'agregarAlumno']);
@@ -39,5 +40,9 @@ Route::post('/clases/{codigo_grupo}/temas', [TemaController::class, 'store']);
 
 Route::get('/clases/{codigo_grupo}/tareas', [TareaController::class, 'index']);
 Route::post('/clases/{codigo_grupo}/tareas', [TareaController::class, 'store']);
+
+Route::get('/clases/{id}', [ClaseController::class, 'show']);
+Route::get('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'index']);
+Route::post('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'store']);
 
 

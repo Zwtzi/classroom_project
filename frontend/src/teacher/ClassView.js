@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import Layout2 from '../components/Layout2';
 import '../styles/ClassView.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 const ClassView = () => {
   const { classCode } = useParams(); // Obtener el ID de la clase desde la URL
@@ -106,19 +108,15 @@ const ClassView = () => {
     <Layout2>
       <div className="class-view">
         <h2>Alumnos en la Clase {classCode}</h2>
-        <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
-          <option value="">Selecciona un alumno</option>
-          {availableStudents
-            .filter(student => !students.some(s => s.id === student.id))
-            .map((student) => (
-              <option key={student.id} value={student.id}>{student.nombre}</option>
-            ))}
-        </select>
-        <button onClick={handleAddStudent}>Agregar Alumno</button>
+
+        {/* Botón para redirigir a la vista de agregar alumno */}
+        <Link to={`/clases/${classCode}/agregar-alumno`}>
+          <button>Agregar Alumno</button>
+        </Link>
 
         <ul>
           {students.map((student, index) => (
-            <li key={index}>{student.nombre}</li>
+              <li key={index}>{student.nombre}</li>
           ))}
         </ul>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tema;
 use App\Models\Clase;
+use App\Models\Aviso;  // Importamos el modelo Aviso
 
 class TemaController extends Controller
 {
@@ -36,10 +37,17 @@ class TemaController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
+        // Crear el nuevo tema
         $tema = Tema::create([
             'clase_id' => $clase->id,
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
+        ]);
+
+        // Crear un aviso relacionado con el tema
+        Aviso::create([
+            'clase_id' => $clase->id,
+            'contenido' => 'Nuevo material publicado: ' . $tema->nombre,
         ]);
 
         return response()->json($tema, 201);

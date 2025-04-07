@@ -1,0 +1,49 @@
+.dashboard-content {
+    padding: 20px;
+    text-align: left;
+}
+
+.welcome-message h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.welcome-message p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.classes-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start; /* Alinea las tarjetas a la izquierda */
+}
+
+.class-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.class-card:hover {
+    transform: translateY(-10px);
+}
+
+.class-card h3 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.class-card p {
+    font-size: 1.1rem;
+    color: #555;
+}
+

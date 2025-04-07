@@ -5,9 +5,9 @@ import '../styles/ClassView.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-
 const ClassView = () => {
-  const { classCode } = useParams(); // Obtener el ID de la clase desde la URL
+  const [clase, setClase] = useState(null);
+  const {classCode } = useParams(); // Obtener el ID de la clase desde la URL
   const [students, setStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState('');
@@ -22,22 +22,24 @@ const ClassView = () => {
     fecha_limite: '',
     tema_id: ''
   });
+  
   const [tareas, setTareas] = useState([]);
-
+  const [materiales, setMateriales] = useState([]);
+  const [nuevoMaterial, setNuevoMaterial] = useState({ titulo: '', descripcion: '' });
+  const [archivoMaterial, setArchivoMaterial] = useState(null);
 
 
   useEffect(() => {
-    // Obtener alumnos de la clase
+    // Obtener datos de la clase
     axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/alumnos`)
       .then(response => setStudents(response.data))
       .catch(error => console.error("Error al obtener alumnos de la clase:", error));
 
-    // Obtener lista de alumnos disponibles
-    axios.get("http://127.0.0.1:8000/api/alumnos")
-      .then(response => setAvailableStudents(response.data))
-      .catch(error => console.error("Error al obtener lista de alumnos:", error));
+      axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/materiales`)
+  .then(res => setMateriales(res.data))
+  .catch(err => console.error("Error al obtener materiales:", err));
 
-    // Obtener avisos de la clase
+
     axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/avisos`)
       .then(response => setAvisos(response.data))
       .catch(error => console.error("Error al obtener avisos:", error));
@@ -49,7 +51,9 @@ const ClassView = () => {
     axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/tareas`)
       .then(response => setTareas(response.data))
       .catch(error => console.error("Error al obtener tareas:", error));
-
+      axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/materiales`)
+  .then(res => setMateriales(res.data))
+  .catch(err => console.error("Error al obtener materiales:", err));
 
   }, [classCode]);
 
@@ -76,9 +80,6 @@ const ClassView = () => {
     const formData = new FormData();
     formData.append("contenido", nuevoAviso);
 
-    // Depurar los archivos antes de enviarlos
-    console.log("Archivos a enviar:", archivos);
-
     archivos.forEach((file, index) => {
         formData.append(`anexos[${index}]`, file);
     });
@@ -100,16 +101,18 @@ const ClassView = () => {
     } catch (error) {
         console.error("Error al agregar aviso:", error.response ? error.response.data : error);
     }
-};
-
-
+  };
 
   return (
     <Layout2>
       <div className="class-view">
-        <h2>Alumnos en la Clase {classCode}</h2>
+        <div className="class-banner">
+          <div className="class-info">
+            <h1>Clase: {classCode}</h1>
+            <p>Bienvenido profesor</p>
+          </div>
+        </div>
 
-        {/* Botón para redirigir a la vista de agregar alumno */}
         <Link to={`/clases/${classCode}/agregar-alumno`}>
           <button>Agregar Alumno</button>
         </Link>
@@ -120,8 +123,8 @@ const ClassView = () => {
           ))}
         </ul>
 
-        {/* Formulario para agregar avisos */}
-        <div className="avisos-section">
+        {/* Sección de Avisos (sin tarjeta) */}
+        <div className="card avisos-section">
           <h2>Avisos</h2>
           <form onSubmit={handleAddAviso}>
             <textarea
@@ -140,27 +143,71 @@ const ClassView = () => {
               <li key={aviso.id}>
                 <p>{aviso.contenido}</p>
                 <p><small>{new Date(aviso.created_at).toLocaleString()}</small></p>
-                {aviso.anexos && aviso.anexos.length > 0 && (
-                  <div>
-                    <h4>Archivos Adjuntos:</h4>
-                    <ul>
-                      {aviso.anexos.map(anexo => (
-                        <li key={anexo.id}>
-                          <a href={`http://127.0.0.1:8000/storage/${anexo.ruta_archivo}`} target="_blank" rel="noopener noreferrer">
-                            {anexo.ruta_archivo.endsWith('.pdf') ? '📄 Ver PDF' : '🖼️ Ver Imagen'}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Lista de Temas */}
-        <div className="temas-section">
+
+        {/* Sección de Materiales */}
+<div className="card materiales-section">
+  <h2>Materiales</h2>
+  <form onSubmit={async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("titulo", nuevoMaterial.titulo);
+    formData.append("descripcion", nuevoMaterial.descripcion);
+    if (archivoMaterial) {
+      formData.append("archivo", archivoMaterial);
+    }
+
+    try {
+      const res = await axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/materiales`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setMateriales([res.data, ...materiales]);
+      setNuevoMaterial({ titulo: '', descripcion: '' });
+      setArchivoMaterial(null);
+    } catch (err) {
+      console.error("Error al agregar material:", err);
+    }
+  }}>
+    <input
+      type="text"
+      placeholder="Título del material"
+      value={nuevoMaterial.titulo}
+      onChange={(e) => setNuevoMaterial({ ...nuevoMaterial, titulo: e.target.value })}
+      required
+    />
+    <textarea
+      placeholder="Descripción"
+      value={nuevoMaterial.descripcion}
+      onChange={(e) => setNuevoMaterial({ ...nuevoMaterial, descripcion: e.target.value })}
+    />
+    <input
+      type="file"
+      accept="application/pdf,image/*"
+      onChange={(e) => setArchivoMaterial(e.target.files[0])}
+    />
+    <button type="submit">Agregar Material</button>
+  </form>
+
+  <ul>
+    {materiales.map((mat) => (
+      <li key={mat.id}>
+        <strong>{mat.titulo}</strong> - {mat.descripcion}<br />
+        {mat.archivo && (
+          <a href={`http://127.0.0.1:8000/storage/${mat.archivo}`} target="_blank" rel="noreferrer">Ver archivo</a>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+
+
+        {/* Sección de Temas dentro de una tarjeta */}
+        <div className="card temas-section">
           <h2>Temas</h2>
           <form onSubmit={(e) => {
             e.preventDefault();
@@ -195,8 +242,8 @@ const ClassView = () => {
           </ul>
         </div>
 
-        {/* Forms de tareas */}
-        <div className="tareas-section">
+        {/* Forms de tareas dentro de una tarjeta */}
+        <div className="card tareas-section">
           <h2>Tareas</h2>
           <form onSubmit={(e) => {
             e.preventDefault();
@@ -241,13 +288,68 @@ const ClassView = () => {
           <ul>
             {tareas.map((tarea) => (
               <li key={tarea.id}>
-                <strong>{tarea.titulo}</strong> - {tarea.instrucciones}<br/>
-                <small>Fecha límite: {new Date(tarea.fecha_limite).toLocaleString()}</small><br/>
+                <strong>{tarea.titulo}</strong> - {tarea.instrucciones}<br />
+                <small>Fecha límite: {new Date(tarea.fecha_limite).toLocaleString()}</small><br />
                 {tarea.tema && <em>Tema: {tarea.tema.nombre}</em>}
               </li>
             ))}
           </ul>
-        </div>
+        </div>{/* Sección de Materiales */}
+<div className="card materiales-section">
+  <h2>Materiales</h2>
+  <form onSubmit={async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("titulo", nuevoMaterial.titulo);
+    formData.append("descripcion", nuevoMaterial.descripcion);
+    if (archivoMaterial) {
+      formData.append("archivo", archivoMaterial);
+    }
+
+    try {
+      const res = await axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/materiales`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setMateriales([res.data, ...materiales]);
+      setNuevoMaterial({ titulo: '', descripcion: '' });
+      setArchivoMaterial(null);
+    } catch (err) {
+      console.error("Error al agregar material:", err);
+    }
+  }}>
+    <input
+      type="text"
+      placeholder="Título del material"
+      value={nuevoMaterial.titulo}
+      onChange={(e) => setNuevoMaterial({ ...nuevoMaterial, titulo: e.target.value })}
+      required
+    />
+    <textarea
+      placeholder="Descripción"
+      value={nuevoMaterial.descripcion}
+      onChange={(e) => setNuevoMaterial({ ...nuevoMaterial, descripcion: e.target.value })}
+    />
+    <input
+      type="file"
+      accept="application/pdf,image/*"
+      onChange={(e) => setArchivoMaterial(e.target.files[0])}
+    />
+    <button type="submit">Agregar Material</button>
+  </form>
+
+  <ul>
+    {materiales.map((mat) => (
+      <li key={mat.id}>
+        <strong>{mat.titulo}</strong> - {mat.descripcion}<br />
+        {mat.archivo && (
+          <a href={`http://127.0.0.1:8000/storage/${mat.archivo}`} target="_blank" rel="noreferrer">Ver archivo</a>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+
 
       </div>
     </Layout2>

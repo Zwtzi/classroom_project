@@ -44,46 +44,54 @@
     margin-bottom: 15px;
 }
 
-.class-view .avisos-list li {
+.class-view .avisos-section ul li {
     background-color: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
     border-left: 5px solid black;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.class-view .avisos-list li small {
+.class-view .avisos-section ul li small {
     display: block;
     margin-top: 5px;
     color: #777;
     font-size: 0.9rem;
 }
 
+/* Estilos para los temas */
 .class-view .temas-section ul li {
     background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 12px;
     border-left: 5px solid black;
-    margin-bottom: 8px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .class-view .temas-section ul li strong {
-    color: black;
+    color: #4a90e2;
 }
 
-
+/* Estilos para las tareas */
 .class-view .tareas-section ul li {
     background-color: #ffffff;
     padding: 15px;
     margin-bottom: 12px;
     border-left: 5px solid black;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .class-view .tareas-section ul li strong {
-    color: black;
+    color: #4a90e2;
 }
 
 .class-view .tareas-section ul li em {

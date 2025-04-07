@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Dash.css';
 
 const Dashboard = () => {
   const [clases, setClases] = useState([]);
   const [alumnoId, setAlumnoId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Recuperar el objeto del usuario desde localStorage
@@ -38,23 +40,32 @@ const Dashboard = () => {
     }
   }, [alumnoId]);
 
+  const handleCardClick = (claseId) => {
+    // Redirigir al usuario a la página de la clase
+    navigate(`/student/class/${claseId}`);
+  };
+
   return (
     <Layout>
       <div className="dashboard-content">
-        <h2>Bienvenido al Dashboard</h2>
-        <p>Aquí puedes ver todas las clases en las que estás inscrito:</p>
-        {clases.length > 0 ? (
-            <ul>
-              {clases.map(clase => (
-                  <li key={clase.id}>
-                    <Link to={`/student/class/${clase.id}`}>
-                      {clase.nombre} - {clase.codigo_grupo}
-                    </Link>
-                  </li>
-              ))}
-            </ul>
+        {clases.length === 0 ? (
+          <div className="welcome-message">
+            <h2>Bienvenido al Dashboard</h2>
+            <p>Aquí puedes ver todas las clases en las que estás inscrito:</p>
+          </div>
         ) : (
-          <p>{alumnoId === null ? "Cargando..." : "No estás inscrito en ninguna clase."}</p>
+          <div className="classes-cards">
+            {clases.map(clase => (
+              <div
+                key={clase.id}
+                className="class-card"
+                onClick={() => handleCardClick(clase.id)}
+              >
+                <h3>{clase.nombre}</h3>
+                <p>Cuatrimestre: {clase.cuatrimestre}</p> {/* Cambio de maestro a cuatrimestre */}
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </Layout>

@@ -1,0 +1,75 @@
+.add-student-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f4f7fc;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    max-width: 800px;
+    min-height: 100vh;
+    text-align: center;
+}
+
+
+.add-student-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.add-student-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-student-select {
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.add-student-button {
+    padding: 12px 20px;
+    background-color: #CD7F32;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-student-button:hover {
+    background-color: #DAA06D; 
+}
+
+.add-student-item {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.add-student-item h3 {
+    font-size: 1.8rem;
+    color: #2d3748;
+    margin-bottom: 10px;
+}

@@ -51,3 +51,10 @@ Route::get('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'index']);
 Route::post('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'store']);
 
 
+
+use App\Http\Controllers\MaterialController;
+
+Route::get('/clases/{claseId}/materiales', [MaterialController::class, 'index']);
+Route::post('/clases/{claseId}/materiales', [MaterialController::class, 'store']);
+
+

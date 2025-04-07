@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/Student.css';
 
 const AddStudentView = () => {
     const { classCode } = useParams(); // Obtener el ID de la clase desde la URL
@@ -41,16 +42,28 @@ const AddStudentView = () => {
     };
 
     return (
-        <div>
-            <h2>Agregar Alumno a la Clase {classCode}</h2>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
-                <option value="">Selecciona un alumno</option>
-                {availableStudents.map((student) => (
-                    <option key={student.id} value={student.id}>{student.nombre}</option>
-                ))}
-            </select>
-            <button onClick={handleAddStudent}>Agregar Alumno</button>
+        <div className="add-student-container">
+            <div className="add-student-item">
+                <h3 className="add-student-title">Agregar Alumno a la Clase {classCode}</h3>
+                {error && <div className="error-message">{error}</div>}
+                <div className="add-student-form">
+                    <select
+                        className="add-student-select"
+                        value={selectedStudent}
+                        onChange={(e) => setSelectedStudent(e.target.value)}
+                    >
+                        <option value="">Selecciona un alumno</option>
+                        {availableStudents.map((student) => (
+                            <option key={student.id} value={student.id}>
+                                {student.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <button className="add-student-button" onClick={handleAddStudent}>
+                        Agregar Alumno
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

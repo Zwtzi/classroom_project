@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
+import '../styles/ClassRoom.css';
 
 const ClassViewStudent = () => {
     const { classId } = useParams();
@@ -49,53 +50,65 @@ const ClassViewStudent = () => {
 
     return (
         <Layout>
-            <div className="class-view-content">
-                <h2>{clase.nombre}</h2>
-                <p><strong>Código del grupo:</strong> {clase.codigo_grupo}</p>
-                <p><strong>Descripción:</strong> {clase.descripcion ?? "No hay descripción."}</p>
+            <div className="class-view">
+                <div className="class-banner">
+                    <div className="class-info">
+                        <h1>{clase.nombre}</h1>
+                        <p>Código del grupo: {clase.codigo_grupo}</p>
+                    </div>
+                </div>
 
-                <h3>Avisos</h3>
-                {avisos.length > 0 ? (
-                    <ul>
-                        {avisos.map(aviso => (
-                            <li key={aviso.id}>
-                                {aviso.contenido}
-                                {/* Si quieres también mostrar anexos aquí después */}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No hay avisos todavía.</p>
-                )}
+                {/* Avisos */}
+                <div className="card avisos-section">
+                    <h2>Avisos</h2>
+                    {avisos.length > 0 ? (
+                        <ul>
+                            {avisos.map(aviso => (
+                                <li key={aviso.id}>
+                                    {aviso.contenido}
+                                    {/* Si quieres también mostrar anexos aquí después */}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay avisos todavía.</p>
+                    )}
+                </div>
 
-                <h3>Materiales</h3>
-                {materiales.length > 0 ? (
-                    <ul>
-                        {materiales.map(material => (
-                            <li key={material.id}>
-                                {material.nombre} {/* O lo que tengas */}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No hay materiales todavía.</p>
-                )}
+                {/* Materiales */}
+                <div className="card materiales-section">
+                    <h2>Materiales</h2>
+                    {materiales.length > 0 ? (
+                        <ul>
+                            {materiales.map(material => (
+                                <li key={material.id}>
+                                    {material.nombre} {/* O lo que tengas */}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay materiales todavía.</p>
+                    )}
+                </div>
 
-                <h3>Tareas</h3>
-                {tareas.length > 0 ? (
-                    <ul>
-                        {tareas.map(tarea => (
-                            <li key={tarea.id}>
-                                <strong>{tarea.titulo}</strong><br />
-                                <em>{tarea.instrucciones}</em><br />
-                                <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
-                                <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No hay tareas todavía.</p>
-                )}
+                {/* Tareas */}
+                <div className="card tareas-section">
+                    <h2>Tareas</h2>
+                    {tareas.length > 0 ? (
+                        <ul>
+                            {tareas.map(tarea => (
+                                <li key={tarea.id}>
+                                    <strong>{tarea.titulo}</strong><br />
+                                    <em>{tarea.instrucciones}</em><br />
+                                    <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
+                                    <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No hay tareas todavía.</p>
+                    )}
+                </div>
             </div>
         </Layout>
     );

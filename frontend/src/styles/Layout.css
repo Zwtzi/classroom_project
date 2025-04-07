@@ -7,7 +7,7 @@
 
 /* Navbar */
 .navbar {
-  background-color: #3b82f6;
+  background-color: #2e7d32;
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -145,7 +145,7 @@
 }
 
 .join-button {
-  background: #3b82f6;
+  background: #2e7d32;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -214,7 +214,7 @@ select.class-input {
 }
 
 .create-button {
-  background: #3b82f6;
+  background: #2e7d32;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;

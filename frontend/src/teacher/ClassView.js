@@ -1,251 +1,257 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Layout2 from '../components/Layout2';
 import '../styles/ClassView.css';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 
-const ClassView = ({ classCode, className, classDescription }) => {
-  const [announcements, setAnnouncements] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [announcementText, setAnnouncementText] = useState('');
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskInstructions, setTaskInstructions] = useState('');
-  const [dueDate, setDueDate] = useState('');
+const ClassView = () => {
+  const { classCode } = useParams(); // Obtener el ID de la clase desde la URL
   const [students, setStudents] = useState([]);
-  const [newStudent, setNewStudent] = useState('');
-  const [announcementFile, setAnnouncementFile] = useState(null);
-  const [taskFile, setTaskFile] = useState(null); // Nuevo estado para los archivos de tarea
-  const [editingAnnouncement, setEditingAnnouncement] = useState(null);
-  const [editingTask, setEditingTask] = useState(null);
-  const [availableStudents, setAvailableStudents] = useState([]); // Alumnos disponibles
+  const [availableStudents, setAvailableStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState('');
+  const [avisos, setAvisos] = useState([]);
+  const [nuevoAviso, setNuevoAviso] = useState('');
+  const [archivos, setArchivos] = useState([]);
+  const [temas, setTemas] = useState([]);
+  const [nuevoTema, setNuevoTema] = useState({ nombre: '', descripcion: '' });
+  const [nuevaTarea, setNuevaTarea] = useState({
+    titulo: '',
+    instrucciones: '',
+    fecha_limite: '',
+    tema_id: ''
+  });
+  const [tareas, setTareas] = useState([]);
 
 
-  const formatDate = (date) => {
-    const options = { day: 'numeric', month: 'long' };
-    return date.toLocaleDateString('es-ES', options);
-  };
 
   useEffect(() => {
+    // Obtener alumnos de la clase
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/alumnos`)
+      .then(response => setStudents(response.data))
+      .catch(error => console.error("Error al obtener alumnos de la clase:", error));
+
+    // Obtener lista de alumnos disponibles
     axios.get("http://127.0.0.1:8000/api/alumnos")
-        .then(response => {
-          console.log("Lista de alumnos:", response.data);
-          setAvailableStudents(response.data); // Guarda los alumnos en el estado
-        })
-        .catch(error => {
-          console.error("Error al obtener alumnos:", error);
-        });
-  }, []);
+      .then(response => setAvailableStudents(response.data))
+      .catch(error => console.error("Error al obtener lista de alumnos:", error));
+
+    // Obtener avisos de la clase
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/avisos`)
+      .then(response => setAvisos(response.data))
+      .catch(error => console.error("Error al obtener avisos:", error));
+
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/temas`)
+      .then(response => setTemas(response.data))
+      .catch(error => console.error("Error al obtener temas:", error));
+
+    axios.get(`http://127.0.0.1:8000/api/clases/${classCode}/tareas`)
+      .then(response => setTareas(response.data))
+      .catch(error => console.error("Error al obtener tareas:", error));
 
 
+  }, [classCode]);
 
   const handleAddStudent = () => {
     if (selectedStudent) {
-      // Enviar al backend el ID del alumno y el código de la clase
-      axios.post("http://localhost:5000/api/students", {
-        classCode,            // Código de la clase
-        studentId: selectedStudent // ID del alumno seleccionado
+      axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/agregaralumno`, {
+        alumno_id: selectedStudent
       })
-          .then(response => {
-            setStudents([...students, response.data]); // Actualiza el estado de estudiantes
-            setSelectedStudent(''); // Resetea el valor seleccionado
-          })
-          .catch(error => console.error("Error al agregar alumno:", error));
+        .then(response => {
+          setStudents([...students, response.data]);
+          setSelectedStudent('');
+        })
+        .catch(error => console.error("Error al agregar alumno:", error));
     }
   };
 
+  const handleFileChange = (e) => {
+    setArchivos([...e.target.files]);
+  };
 
+  const handleAddAviso = async (e) => {
+    e.preventDefault();
 
-  const handleCreateAnnouncement = async () => {
-    if (announcementText || announcementFile) {
-      const formData = new FormData();
-      formData.append("text", announcementText);
-      formData.append("date", new Date().toISOString());
-      if (announcementFile) {
-        formData.append("file", announcementFile);
-      }
+    const formData = new FormData();
+    formData.append("contenido", nuevoAviso);
 
-      try {
-        const response = await axios.post("http://localhost:5000/api/announcements", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+    // Depurar los archivos antes de enviarlos
+    console.log("Archivos a enviar:", archivos);
 
-        setAnnouncements([...announcements, response.data]);
-        setAnnouncementText('');
-        setAnnouncementFile(null);
-      } catch (error) {
-        console.error("Error al crear el anuncio:", error);
-      }
+    archivos.forEach((file, index) => {
+        formData.append(`anexos[${index}]`, file);
+    });
+
+    try {
+        const response = await axios.post(
+            `http://127.0.0.1:8000/api/clases/${classCode}/avisos`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+        );
+
+        setAvisos([response.data, ...avisos]);
+        setNuevoAviso('');
+        setArchivos([]);
+    } catch (error) {
+        console.error("Error al agregar aviso:", error.response ? error.response.data : error);
     }
-  };
-  const handleEditAnnouncement = (index) => {
-    const announcement = announcements[index];
-    setAnnouncementText(announcement.text);
-    setAnnouncementFile(announcement.file);
-    setEditingAnnouncement(index);
-  };
+};
 
-  const handleCreateTask = async () => {
-    if (taskTitle && taskInstructions && dueDate) {
-      const formData = new FormData();
-      formData.append("title", taskTitle);
-      formData.append("instructions", taskInstructions);
-      formData.append("dueDate", dueDate);
-      formData.append("date", new Date().toISOString());
-      if (taskFile) {
-        formData.append("file", taskFile);
-      }
-
-      try {
-        const response = await axios.post("http://localhost:5000/api/tasks", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        setTasks([...tasks, response.data]);
-        setTaskTitle('');
-        setTaskInstructions('');
-        setDueDate('');
-        setTaskFile(null);
-      } catch (error) {
-        console.error("Error al crear la tarea:", error);
-      }
-    }
-  };
-
-
-  const handleEditTask = (index) => {
-    const task = tasks[index];
-    setTaskTitle(task.title);
-    setTaskInstructions(task.instructions);
-    setDueDate(task.dueDate);
-    setTaskFile(task.file); // Set the file if editing
-    setEditingTask(index);
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setAnnouncementFile(file);
-    }
-  };
-
-  const handleTaskFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setTaskFile(file); // Handling task file input
-    }
-  };
 
 
   return (
     <Layout2>
       <div className="class-view">
-        <div className="class-banner">
-          <div className="class-info">
-            <h1>{className}</h1>
-            <p>{classDescription}</p>
-          </div>
-          <div className="class-code">
-            <h3>Código de Clase</h3>
-            <p>{classCode}</p>
-          </div>
+        <h2>Alumnos en la Clase {classCode}</h2>
+
+        {/* Botón para redirigir a la vista de agregar alumno */}
+        <Link to={`/clases/${classCode}/agregar-alumno`}>
+          <button>Agregar Alumno</button>
+        </Link>
+
+        <ul>
+          {students.map((student, index) => (
+              <li key={index}>{student.nombre}</li>
+          ))}
+        </ul>
+
+        {/* Formulario para agregar avisos */}
+        <div className="avisos-section">
+          <h2>Avisos</h2>
+          <form onSubmit={handleAddAviso}>
+            <textarea
+              placeholder="Escribe un nuevo aviso..."
+              value={nuevoAviso}
+              onChange={(e) => setNuevoAviso(e.target.value)}
+              required
+            />
+            <input type="file" multiple onChange={handleFileChange} accept="image/*,application/pdf" />
+            <button type="submit">Publicar Aviso</button>
+          </form>
+
+          {/* Lista de avisos */}
+          <ul className="avisos-list">
+            {avisos.map(aviso => (
+              <li key={aviso.id}>
+                <p>{aviso.contenido}</p>
+                <p><small>{new Date(aviso.created_at).toLocaleString()}</small></p>
+                {aviso.anexos && aviso.anexos.length > 0 && (
+                  <div>
+                    <h4>Archivos Adjuntos:</h4>
+                    <ul>
+                      {aviso.anexos.map(anexo => (
+                        <li key={anexo.id}>
+                          <a href={`http://127.0.0.1:8000/storage/${anexo.ruta_archivo}`} target="_blank" rel="noopener noreferrer">
+                            {anexo.ruta_archivo.endsWith('.pdf') ? '📄 Ver PDF' : '🖼️ Ver Imagen'}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <section className="students">
-          <h2>Alumnos</h2>
-          <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
-            <option value="">Selecciona un alumno</option>
-            {availableStudents.map((student, index) => (
-                <option key={index} value={student.id}>{student.nombre}</option>
-            ))}
-          </select>
-          <button onClick={handleAddStudent}>Agregar Alumno</button>
-          <ul>
-            {students.map((student, index) => (
-                <li key={index}>{student}</li>
-            ))}
-          </ul>
-        </section>
+        {/* Lista de Temas */}
+        <div className="temas-section">
+          <h2>Temas</h2>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/temas`, nuevoTema)
+              .then(res => {
+                setTemas([res.data, ...temas]);
+                setNuevoTema({ nombre: '', descripcion: '' });
+              })
+              .catch(err => console.error("Error al crear tema:", err));
+          }}>
+            <input
+              type="text"
+              placeholder="Nombre del tema"
+              value={nuevoTema.nombre}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, nombre: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Descripción del tema"
+              value={nuevoTema.descripcion}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, descripcion: e.target.value })}
+            />
+            <button type="submit">Crear Tema</button>
+          </form>
 
-
-        <section className="announcements">
-          <h2>Anuncios</h2>
-          <textarea
-            placeholder="Escribe un anuncio..."
-            value={announcementText}
-            onChange={(e) => setAnnouncementText(e.target.value)}
-          />
-          <input type="file" accept="*/*" onChange={handleFileChange} />
-          <button onClick={handleCreateAnnouncement}>
-            {editingAnnouncement !== null ? 'Actualizar Anuncio' : 'Crear Anuncio'}
-          </button>
           <ul>
-            {announcements.map((announcement, index) => (
-              <li key={index} className="announcement-item">
-                <div className="announcement-header">
-                  <span>{announcement.date}{announcement.modificationDate && ` (${announcement.modificationDate})`}</span>
-                </div>
-                <p>{announcement.text}</p>
-                {announcement.file && (
-                  <a href={URL.createObjectURL(announcement.file)} download>
-                    Descargar archivo adjunto ({announcement.file.name})
-                  </a>
-                )}
-                <button onClick={() => handleEditAnnouncement(index)}>Editar</button>
+            {temas.map((tema) => (
+              <li key={tema.id}>
+                <strong>{tema.nombre}</strong> - {tema.descripcion}
               </li>
             ))}
           </ul>
-        </section>
+        </div>
 
-        <section className="tasks">
+        {/* Forms de tareas */}
+        <div className="tareas-section">
           <h2>Tareas</h2>
-          <input
-            type="text"
-            placeholder="Título de la tarea"
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-          />
-          <textarea
-            placeholder="Instrucciones de la tarea"
-            value={taskInstructions}
-            onChange={(e) => setTaskInstructions(e.target.value)}
-          />
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
-          <input type="file" accept="*/*" onChange={handleTaskFileChange} />
-          <button onClick={handleCreateTask}>
-            {editingTask !== null ? 'Actualizar Tarea' : 'Crear Tarea'}
-          </button>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            axios.post(`http://127.0.0.1:8000/api/clases/${classCode}/tareas`, nuevaTarea)
+              .then(res => {
+                setTareas([res.data, ...tareas]);
+                setNuevaTarea({ titulo: '', instrucciones: '', fecha_limite: '', tema_id: '' });
+              })
+              .catch(err => console.error("Error al crear tarea:", err));
+          }}>
+            <input
+              type="text"
+              placeholder="Título de la tarea"
+              value={nuevaTarea.titulo}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, titulo: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Instrucciones"
+              value={nuevaTarea.instrucciones}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, instrucciones: e.target.value })}
+            />
+            <input
+              type="datetime-local"
+              value={nuevaTarea.fecha_limite}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, fecha_limite: e.target.value })}
+              required
+            />
+            <select
+              value={nuevaTarea.tema_id}
+              onChange={(e) => setNuevaTarea({ ...nuevaTarea, tema_id: e.target.value })}
+            >
+              <option value="">Sin tema</option>
+              {temas.map((tema) => (
+                <option key={tema.id} value={tema.id}>{tema.nombre}</option>
+              ))}
+            </select>
+            <button type="submit">Crear Tarea</button>
+          </form>
+
+          {/* Lista de tareas existentes */}
           <ul>
-            {tasks.map((task, index) => (
-              <li key={index} className="task-item">
-                <div className="task-header">
-                  <span>{task.date}{task.modificationDate && ` (${task.modificationDate})`}</span>
-                </div>
-                <div className="task-content">
-                  <h3>{task.title}</h3>
-                  <p>{task.instructions}</p>
-                  <p><strong>Fecha de entrega:</strong> {task.dueDate}</p>
-                  {task.file && (
-                    <a href={URL.createObjectURL(task.file)} download>
-                      Descargar archivo adjunto ({task.file.name})
-                    </a>
-                  )}
-                </div>
-                <button onClick={() => handleEditTask(index)}>Editar</button>
+            {tareas.map((tarea) => (
+              <li key={tarea.id}>
+                <strong>{tarea.titulo}</strong> - {tarea.instrucciones}<br/>
+                <small>Fecha límite: {new Date(tarea.fecha_limite).toLocaleString()}</small><br/>
+                {tarea.tema && <em>Tema: {tarea.tema.nombre}</em>}
               </li>
             ))}
           </ul>
-        </section>
+        </div>
+
       </div>
     </Layout2>
   );
-
 };
-
 
 export default ClassView;

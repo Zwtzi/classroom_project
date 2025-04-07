@@ -6,29 +6,71 @@
   }
   
   .class-card {
-    background-color: #ecf0f1;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom, #2c943f 70%, #FAFFF0 30%);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease;
+    position: relative;
+    min-height: 150px;
+    cursor: pointer;
+    width: 150%;
   }
   
   .class-card:hover {
     transform: translateY(-10px);
   }
   
-  .class-card h3 {
-    margin: 0 0 10px 0;
-    color: #2c3e50;
+  /* Contenedor interno para distribuir texto y icono */
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .class-card p {
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  /* Estilos para el contenido textual */
+
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .text-content h3 {
+    width: 137%;
+    color: #87F29B;
+    font-size: 32px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 700;
+    margin-top: -35px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  }
+
+  .text-content p {
     margin: 0;
-    color: #7f8c8d;
+    color: #87F29B;
+    font-size: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
-  .class-card .menu-icon {
-    position: absolute;
+  /* Icono de usuario */
+  .usercard-icon {
+    color: #2e7d32;
+    margin-top: 30px;
+  }
+  
+  /* Ícono del menú contextual */
+  .menu-icon {
+    /*position: absolute; */
     top: 10px;
     right: 10px;
     cursor: pointer;
@@ -49,7 +91,7 @@
   }
   
   .cancel-button {
-    background-color: #e74c3c;
+    background-color: #e73c59;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -60,6 +102,6 @@
   }
   
   .cancel-button:hover {
-    background-color: #c0392b;
+    background-color: #c02b55;
   }
   

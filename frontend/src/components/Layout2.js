@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaPlus } from 'react-icons/fa';
 import '../styles/Layout.css';
 
 const Navbar = ({ addClass }) => {
@@ -123,14 +122,53 @@ const Navbar = ({ addClass }) => {
         <div className="navbar-container">
           <h1 className="navbar-brand" onClick={handleNavigateToDashboard}>CLASSROOM</h1>
           <div className="navbar-links">
-            <FaPlus className="menu-icon plus-icon" onClick={() => setIsOptionsOpen(!isOptionsOpen)} />
+          <svg
+            className="more-icon" 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="40" 
+            height="40" 
+            viewBox="0 0 70 70" 
+            fill="none" 
+            onClick={() => setIsOptionsOpen(!isOptionsOpen)} 
+            style={{ cursor: 'pointer' }}
+          >
+            <rect width="70" height="70" rx="20" fill="#FAFFF0" />
+            <path d="M35 22L35 48" stroke="#2C943F" strokeWidth="4" strokeLinecap="round" />
+            <path d="M48 35.5L22 35.5" stroke="#2C943F" strokeWidth="4" strokeLinecap="round" />
+          </svg>
             {isOptionsOpen && (
               <div className="options-menu" ref={optionsRef}>
                 <button onClick={() => { setIsCreateModalOpen(true); setIsOptionsOpen(false); }}>Crear una clase</button>
               </div>
             )}
-            <FaUserCircle className="menu-icon user-icon" onClick={() => setIsMenuOpen(!isMenuOpen)} />
-            {isMenuOpen && (
+
+            <svg
+              className="user-icon"  
+              xmlns="http://www.w3.org/2000/svg" 
+              width="40" 
+              height="40" 
+              viewBox="0 0 70 70" 
+              fill="none" 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              style={{ cursor: 'pointer' }}
+            >
+              <rect width="70" height="70" rx="20" fill="#FAFFF0" />
+              <path 
+                d="M35.1745 35.0457C40.867 35.0457 45.4817 30.431 45.4817 24.7385C45.4817 19.0459 40.867 14.4313 35.1745 14.4313C29.482 14.4313 24.8673 19.0459 24.8673 24.7385C24.8673 30.431 29.482 35.0457 35.1745 35.0457Z" 
+                stroke="#2C943F" 
+                strokeWidth="3" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+              />
+              <path 
+                d="M52.8823 53C52.8823 45.0222 44.9458 38.5699 35.1746 38.5699C25.4033 38.5699 17.4668 45.0222 17.4668 53" 
+                stroke="#2C943F" 
+                strokeWidth="3" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+              />
+            </svg>
+            {isMenuOpen && userData && (
               <div className="user-menu" ref={menuRef}>
                 <button className="logout-button" onClick={() => navigate('/')}>Cerrar sesión</button>
               </div>
@@ -140,49 +178,62 @@ const Navbar = ({ addClass }) => {
       </nav>
 
       {isCreateModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content" ref={modalRef}>
-            <h2>Crear una clase</h2>
-            <input
-              type="text"
-              placeholder="Nombre de la clase"
-              className="class-input"
-              value={className}
-              onChange={(e) => setClassName(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Descripción"
-              className="class-input"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Código del grupo"
-              className="class-input"
-              value={classCode}
-              onChange={(e) => setClassCode(e.target.value)}
-            />
-            <input type="text" value="Ingeniería en Tecnologías de la Información" className="class-input" readOnly />
-            <input
-              type="text"
-              placeholder="Cuatrimestre"
-              className="class-input"
-              value={cuatrimestre}
-              onChange={(e) => setCuatrimestre(e.target.value)}
-            />
-            <div className="modal-buttons">
-              <button className="cancel-button" onClick={() => setIsCreateModalOpen(false)}>
-                Cancelar
-              </button>
-              <button className="create-button" onClick={handleCreateClass}>
-                Crear
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="modal-overlay">
+    <div className="modal-content" ref={modalRef}>
+      <h2 className="modal-title">Crear una clase</h2>
+
+      <div className="form-row">
+        <input
+          type="text"
+          placeholder="Descripción"
+          className="styled-input long-input"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          value="Ingeniería en Tecnologías de la Información"
+          className="styled-input long-input"
+          readOnly
+        />
+      </div>
+
+      <div className="form-row">
+        <input
+          type="text"
+          placeholder="Nombre de la clase"
+          className="styled-input"
+          value={className}
+          onChange={(e) => setClassName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Código del grupo"
+          className="styled-input"
+          value={classCode}
+          onChange={(e) => setClassCode(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Cuatrimestre"
+          className="styled-input"
+          value={cuatrimestre}
+          onChange={(e) => setCuatrimestre(e.target.value)}
+        />
+      </div>
+
+      <div className="modal-buttons">
+        <button className="lacancel-button" onClick={() => setIsCreateModalOpen(false)}>
+          Cancelar
+        </button>
+        <button className="create-button" onClick={handleCreateClass}>
+          Crear
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </>
   );
 };

@@ -9,6 +9,8 @@ use App\Http\Controllers\ClaseAlumnoController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\TemaController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\EntregaController;
 
 
 
@@ -50,4 +52,8 @@ Route::get('/clases/{id}', [ClaseController::class, 'show']);
 Route::get('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'index']);
 Route::post('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'store']);
 
-
+Route::post('/clases/{classCode}/materiales', [MaterialController::class, 'store']);
+Route::get('/clases/{classCode}/materiales', [MaterialController::class, 'index']);
+Route::put('/entregas/{id}', [EntregaController::class, 'update']);
+Route::get('entregas', [EntregaController::class, 'index']);
+Route::patch('/entregas/{id}', [EntregaController::class, 'update']);

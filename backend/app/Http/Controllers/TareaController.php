@@ -7,6 +7,7 @@ use App\Models\Tarea;
 use App\Models\Clase;
 use App\Models\Tema;
 use App\Models\Aviso;  // Importamos el modelo Aviso
+use App\Models\Entrega;  // Importamos el modelo Aviso
 
 class TareaController extends Controller
 {
@@ -64,6 +65,23 @@ class TareaController extends Controller
             'contenido' => 'Nueva tarea publicada: ' . $tarea->titulo,
         ]);
 
+        // Crear las entregas para todos los alumnos de la clase con una calificación de 0
+        $alumnos = $clase->alumnos; // Aquí asumo que tienes una relación llamada 'alumnos' en el modelo Clase.
+
+        foreach ($alumnos as $alumno) {
+            \App\Models\Entrega::create([
+                'alumno_id' => $alumno->id,
+                'tarea_id' => $tarea->id,
+                'clase_id' => $clase->id,
+                'profesor_id' => $clase->profesor_id, // Asumí que tienes un campo 'profesor_id' en la clase.
+                'comentario' => '',
+                'archivo' => null, // Si no hay archivo, puedes poner null o dejar vacío
+                'entregado_en' => null, // Se puede dejar en null al principio
+                'calificacion' => 0, // La calificación inicial es 0
+            ]);
+        }
+
         return response()->json($tarea, 201);
     }
+
 }

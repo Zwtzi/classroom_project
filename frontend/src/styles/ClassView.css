@@ -260,3 +260,17 @@ border-color: #2b7a39;
     font-weight: bold;
   }
 
+  .revisar-link {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 8px 12px;
+    background-color: #2C943F;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  .revisar-link:hover {
+    background-color: #257c35;
+  }
+  

@@ -11,6 +11,7 @@ class Material extends Model
 
     protected $table = 'materiales';
     protected $fillable = ['clase_id', 'titulo', 'descripcion', 'archivo'];
+    
 
     public function clase()
     {

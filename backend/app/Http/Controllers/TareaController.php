@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Tarea;
 use App\Models\Clase;
 use App\Models\Tema;
+use App\Models\Aviso;  // Importamos el modelo Aviso
+use App\Models\Entrega;  // Importamos el modelo Aviso
 
 class TareaController extends Controller
 {
@@ -48,6 +50,7 @@ class TareaController extends Controller
             return response()->json(['error' => 'El tema no pertenece a esta clase'], 400);
         }
 
+        // Crear la tarea
         $tarea = \App\Models\Tarea::create([
             'titulo' => $request->titulo,
             'instrucciones' => $request->instrucciones,
@@ -55,6 +58,28 @@ class TareaController extends Controller
             'clase_id' => $clase->id,
             'tema_id' => $tema->id
         ]);
+
+        // Crear un aviso relacionado con la tarea
+        Aviso::create([
+            'clase_id' => $clase->id,
+            'contenido' => 'Nueva tarea publicada: ' . $tarea->titulo,
+        ]);
+
+        // Crear las entregas para todos los alumnos de la clase con una calificación de 0
+        $alumnos = $clase->alumnos; // Aquí asumo que tienes una relación llamada 'alumnos' en el modelo Clase.
+
+        foreach ($alumnos as $alumno) {
+            \App\Models\Entrega::create([
+                'alumno_id' => $alumno->id,
+                'tarea_id' => $tarea->id,
+                'clase_id' => $clase->id,
+                'profesor_id' => $clase->profesor_id, // Asumí que tienes un campo 'profesor_id' en la clase.
+                'comentario' => '',
+                'archivo' => null, // Si no hay archivo, puedes poner null o dejar vacío
+                'entregado_en' => null, // Se puede dejar en null al principio
+                'calificacion' => 0, // La calificación inicial es 0
+            ]);
+        }
 
         return response()->json($tarea, 201);
     }

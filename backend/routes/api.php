@@ -9,6 +9,9 @@ use App\Http\Controllers\ClaseAlumnoController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\TemaController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\EntregaController;
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -17,9 +20,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::post('/clases', [ClaseController::class, 'store']);
+Route::post('/clasealumno', [ClaseAlumnoController::class, 'store']);
 Route::get('/clases', [ClaseController::class, 'index']);
 
 Route::post('/clases/{claseId}/agregaralumno',  [ClaseController::class, 'agregarAlumno']);
+Route::get('/clases', [ClaseController::class, 'index']);
+Route::post('/clases/{claseId}/agregar-alumno', [ClaseController::class, 'agregarAlumno']);
+Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos']);
+Route::get('/alumnos', [UsuarioController::class, 'getAlumnos']);
 
 Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos']);
 Route::get('/alumnos', [UsuarioController::class, 'getAlumnos']);
@@ -40,4 +48,12 @@ Route::post('/clases/{codigo_grupo}/temas', [TemaController::class, 'store']);
 Route::get('/clases/{codigo_grupo}/tareas', [TareaController::class, 'index']);
 Route::post('/clases/{codigo_grupo}/tareas', [TareaController::class, 'store']);
 
+Route::get('/clases/{id}', [ClaseController::class, 'show']);
+Route::get('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'index']);
+Route::post('/clases/{codigo_grupo}/avisos', [AvisoController::class, 'store']);
 
+Route::post('/clases/{classCode}/materiales', [MaterialController::class, 'store']);
+Route::get('/clases/{classCode}/materiales', [MaterialController::class, 'index']);
+Route::put('/entregas/{id}', [EntregaController::class, 'update']);
+Route::get('entregas', [EntregaController::class, 'index']);
+Route::patch('/entregas/{id}', [EntregaController::class, 'update']);

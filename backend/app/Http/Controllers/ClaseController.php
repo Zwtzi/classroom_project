@@ -6,20 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\Clase;
 use App\Models\ClaseAlumno;
 use App\Models\Usuario;
+
 class ClaseController extends Controller
 {
     public function store(Request $request)
     {
-        // Validar los datos antes de guardarlos
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'codigo_grupo' => 'required|string|max:50',
             'carrera' => 'required|string|max:255',
-            'profesor_id' => 'required|exists:usuarios,id', // Asegurar que el profesor existe
+            'profesor_id' => 'required|exists:usuarios,id',
         ]);
 
-        // Crear la nueva clase
         $clase = Clase::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
@@ -36,7 +35,7 @@ class ClaseController extends Controller
 
     public function index()
     {
-        $clases = Clase::all(); // Recupera todas las clases
+        $clases = Clase::all();
         return response()->json($clases);
     }
 
@@ -46,8 +45,25 @@ class ClaseController extends Controller
             'alumno_id' => 'required|exists:usuarios,id',
         ]);
 
-        $claseAlumno = ClaseAlumno::create([
-            'clase_id' => $claseId,
+        // Buscar la clase por ID (ya que el parámetro se llama claseId)
+        $clase = Clase::find($claseId);
+
+        if (!$clase) {
+            return response()->json(['error' => 'Clase no encontrada.'], 404);
+        }
+
+        // Verificar si el alumno ya está inscrito para evitar duplicados
+        $existe = ClaseAlumno::where('clase_id', $clase->id)
+                             ->where('alumno_id', $request->alumno_id)
+                             ->exists();
+
+        if ($existe) {
+            return response()->json(['error' => 'El alumno ya está inscrito en esta clase.'], 409);
+        }
+
+        // Crear la relación clase-alumno
+        ClaseAlumno::create([
+            'clase_id' => $clase->id,
             'alumno_id' => $request->alumno_id,
         ]);
 
@@ -56,25 +72,28 @@ class ClaseController extends Controller
         return response()->json($alumno, 201);
     }
 
-
-
-
     public function listarAlumnos($claseId)
     {
-        // Asegúrate de que la clase existe
         $clase = Clase::find($claseId);
 
         if (!$clase) {
             return response()->json(['message' => 'Clase no encontrada'], 404);
         }
 
-        // Obtener los alumnos de la clase
-        $alumnos = $clase->alumnos; // Supongamos que tienes una relación 'alumnos' en la clase
+        // Asegúrate de tener la relación definida en el modelo Clase: public function alumnos()
+        $alumnos = $clase->alumnos;
 
         return response()->json($alumnos);
     }
 
+    public function show($id)
+    {
+        $clase = Clase::find($id);
 
+        if (!$clase) {
+            return response()->json(['message' => 'Clase no encontrada'], 404);
+        }
 
-
+        return response()->json($clase);
+    }
 }

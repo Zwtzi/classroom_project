@@ -35,14 +35,31 @@ const Dashboard2 = () => {
     <Layout2>
       <div className="dashboard-container">
         {classes.map((classItem, index) => (
-          <div key={index} className="class-card" onClick={() => handleClassClick(classItem.codigo_grupo)}>
-            <div className="card-header">
-              <h3>{classItem.nombre}</h3>
-              <span className="menu-icon" onClick={(e) => { e.stopPropagation(); toggleMenu(index); }}>
-                &#x22EE;
-              </span>
+          <div 
+            key={index} 
+            className="class-card" 
+            onClick={() => handleClassClick(classItem.codigo_grupo)}
+          >
+            <div className="card-content">
+              <div className="text-content">
+                <h3>{classItem.nombre}</h3>
+                <p>{classItem.descripcion}</p>
+              </div>
+              <svg className="usercard-icon" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 129 129" fill="none">
+                <circle cx="64.5" cy="64.5" r="64.5" fill="#87F29B"/>
+                <path d="M64.7077 61.7418C77.339 61.7418 87.5786 51.5022 87.5786 38.8709C87.5786 26.2397 77.339 16 64.7077 16C52.0765 16 41.8368 26.2397 41.8368 38.8709C41.8368 51.5022 52.0765 61.7418 64.7077 61.7418Z" stroke="#2C943F" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M104 101.581C104 83.8791 86.3893 69.5619 64.7077 69.5619C43.0261 69.5619 25.4155 83.8791 25.4155 101.581" stroke="#2C943F" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
-            <p>{classItem.descripcion}</p>
+            <span 
+              className="menu-icon" 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                toggleMenu(index); 
+              }}
+            >
+              &#x22EE;
+            </span>
             {showMenu === index && (
               <div className="menu-modal">
                 <button className="cancel-button">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout2 from '../components/Layout2';
-import '../styles/Dashboard.css';
+import '../styles/Dashboard2.css';
 
 const Dashboard2 = () => {
   const [classes, setClasses] = useState([]);
@@ -51,22 +51,7 @@ const Dashboard2 = () => {
                 <path d="M104 101.581C104 83.8791 86.3893 69.5619 64.7077 69.5619C43.0261 69.5619 25.4155 83.8791 25.4155 101.581" stroke="#2C943F" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span 
-              className="menu-icon" 
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                toggleMenu(index); 
-              }}
-            >
-              &#x22EE;
-            </span>
-            {showMenu === index && (
-              <div className="menu-modal">
-                <button className="cancel-button">
-                  Cancelar Registro
-                </button>
-              </div>
-            )}
+
           </div>
         ))}
       </div>

@@ -1,0 +1,96 @@
+.revisar-container {
+    padding: 30px;
+    background-color: #f8fbef;
+    border-radius: 20px;
+}
+
+.revisar-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #339946;
+    margin-bottom: 20px;
+}
+
+.revisar-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #339946;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.revisar-table th,
+.revisar-table td {
+    padding: 15px;
+    border: 1px solid #339946;
+    text-align: left;
+    font-size: 1rem;
+}
+
+.revisar-table th {
+    background-color: #dff5cd;
+    color: #2c943f;
+    font-weight: bold;
+}
+
+.revisar-table td {
+    color: #2c943f;
+    font-weight: bold;
+}
+
+.revisar-table a {
+    color: #2c943f;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.revisar-input {
+    padding: 10px;
+    border: 2px solid #339946;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2c943f;
+    background-color: #f8fbef;
+    outline: none;
+}
+
+.revisar-input:focus {
+    border-color: #2b7a39;
+}
+
+.revisar-btn {
+    background-color: #339946;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.revisar-btn:hover {
+    background-color: #2b7a39;
+}
+
+.revisar-empty {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.revisar-back-btn {
+    background-color: transparent;
+    border: none;
+    color: #339946;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.revisar-back-btn:hover {
+    text-decoration: underline;
+}

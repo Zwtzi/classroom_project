@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Entrega;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EntregaController extends Controller
 {
@@ -52,8 +53,6 @@ class EntregaController extends Controller
         return response()->json(['message' => 'Calificación actualizada correctamente', 'data' => $entrega], 200);
     }
 
-
-
     // Eliminar entrega (si se desea permitir)
     public function destroy($id)
     {
@@ -62,4 +61,49 @@ class EntregaController extends Controller
 
         return response()->json(['message' => 'Entrega eliminada.']);
     }
+
+    public function subirArchivo(Request $request, $id)
+    {
+        $entrega = Entrega::findOrFail($id);
+
+        // Verificar que la tarea aún esté en plazo
+        if ($entrega->tarea && $entrega->tarea->fecha_limite < now()) {
+            return response()->json(['error' => 'La fecha límite ya pasó. No puedes entregar.'], 403);
+        }
+
+        $request->validate([
+            'archivo' => 'required|file|mimes:pdf,doc,docx,zip,rar,txt|max:20480', // 20MB máx
+        ]);
+
+        $archivo = $request->file('archivo');
+        $ruta = $archivo->store('entregas', 'public');
+
+        $entrega->archivo = $ruta;
+        $entrega->entregado_en = now();
+        $entrega->save();
+
+        return response()->json([
+            'message' => 'Archivo subido correctamente',
+            'archivo' => $ruta
+        ]);
+    }
+
+    public function entregaPorAlumnoYTarea(Request $request)
+    {
+        $request->validate([
+            'alumno_id' => 'required|exists:usuarios,id',
+            'tarea_id' => 'required|exists:tareas,id',
+        ]);
+
+        $entrega = Entrega::where('alumno_id', $request->alumno_id)
+                        ->where('tarea_id', $request->tarea_id)
+                        ->first();
+
+        if (!$entrega) {
+            return response()->json(['error' => 'Entrega no encontrada'], 404);
+        }
+
+        return response()->json($entrega);
+    }
+
 }

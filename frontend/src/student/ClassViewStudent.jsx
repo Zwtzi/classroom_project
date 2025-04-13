@@ -9,6 +9,8 @@ const ClassViewStudent = () => {
     const [avisos, setAvisos] = useState([]);
     const [materiales, setMateriales] = useState([]);
     const [tareas, setTareas] = useState([]);  // Agregamos el estado para las tareas
+    const [usuarioId, setUsuarioId] = useState(1); // reemplaza esto con el ID real del alumno si tienes auth
+    const [entregas, setEntregas] = useState({});
 
     useEffect(() => {
         // Cargar detalles de la clase
@@ -31,11 +33,53 @@ const ClassViewStudent = () => {
 
                 // Cargar tareas
                 axios.get(`http://127.0.0.1:8000/api/clases/${codigoGrupo}/tareas`)
-                    .then(resTareas => setTareas(resTareas.data))  // Almacenamos las tareas en el estado
-                    .catch(error => console.error("Error al cargar tareas:", error));
+                .then(async resTareas => {
+                    const tareasData = resTareas.data;
+
+                    // Consultar entregas por cada tarea
+                    const entregasMap = {};
+                    for (const tarea of tareasData) {
+                        try {
+                            const resEntrega = await axios.get('http://127.0.0.1:8000/api/entregas/por-tarea', {
+                                params: {
+                                    tarea_id: tarea.id,
+                                    alumno_id: usuarioId
+                                }
+                            });
+                            entregasMap[tarea.id] = resEntrega.data;
+                        } catch (error) {
+                            entregasMap[tarea.id] = null;
+                        }
+                    }
+
+                    setTareas(tareasData);
+                    setEntregas(entregasMap);
+                })
+                .catch(error => console.error("Error al cargar tareas:", error));
+
             })
             .catch(error => console.error("Error al cargar detalles de la clase:", error));
     }, [classId]);
+
+    const handleArchivoChange = async (e, entregaId) => {
+        const archivo = e.target.files[0];
+        if (!archivo) return;
+    
+        const formData = new FormData();
+        formData.append("archivo", archivo);
+    
+        try {
+            await axios.post(`http://127.0.0.1:8000/api/entregas/${entregaId}/archivo`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            alert("Archivo entregado correctamente 🎉");
+            window.location.reload(); // Recarga para actualizar vista
+        } catch (error) {
+            console.error("Error al subir archivo:", error);
+            alert("Error al entregar el archivo");
+        }
+    };
+    
 
     if (!clase) {
         return (
@@ -84,14 +128,36 @@ const ClassViewStudent = () => {
                 <h3>Tareas</h3>
                 {tareas.length > 0 ? (
                     <ul>
-                        {tareas.map(tarea => (
-                            <li key={tarea.id}>
-                                <strong>{tarea.titulo}</strong><br />
-                                <em>{tarea.instrucciones}</em><br />
-                                <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
-                                <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
-                            </li>
-                        ))}
+                        {tareas.map(tarea => {
+                            const entrega = entregas[tarea.id];
+
+                            return (
+                                <li key={tarea.id}>
+                                    <strong>{tarea.titulo}</strong><br />
+                                    <em>{tarea.instrucciones}</em><br />
+                                    <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
+                                    <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
+
+                                    {entrega ? (
+                                        <div style={{ marginTop: '10px' }}>
+                                            {entrega.archivo ? (
+                                                <>
+                                                    <p><strong>Ya entregaste:</strong> <a href={`http://127.0.0.1:8000/storage/${entrega.archivo}`} target="_blank" rel="noopener noreferrer">Ver archivo</a></p>
+                                                    <p><strong>Entregado en:</strong> {new Date(entrega.entregado_en).toLocaleString()}</p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <label>Subir archivo de entrega:</label>
+                                                    <input type="file" onChange={(e) => handleArchivoChange(e, entrega.id)} />
+                                                </>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <p style={{ color: 'gray' }}>No tienes asignación para esta tarea.</p>
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <p>No hay tareas todavía.</p>

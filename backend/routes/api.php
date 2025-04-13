@@ -23,16 +23,12 @@ Route::post('/clases', [ClaseController::class, 'store']);
 Route::post('/clasealumno', [ClaseAlumnoController::class, 'store']);
 Route::get('/clases', [ClaseController::class, 'index']);
 
-Route::post('/clases/{claseId}/agregaralumno',  [ClaseController::class, 'agregarAlumno']);
 Route::get('/clases', [ClaseController::class, 'index']);
-Route::post('/clases/{claseId}/agregar-alumno', [ClaseController::class, 'agregarAlumno']);
-Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos']);
+Route::post('/clases/{codigo_grupo}/agregaralumno', [ClaseController::class, 'agregarAlumno']);
+Route::get('/clases/{codigo_grupo}/alumnos', [ClaseController::class, 'listarAlumnos']);
 Route::get('/alumnos', [UsuarioController::class, 'getAlumnos']);
 
-Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos']);
 Route::get('/alumnos', [UsuarioController::class, 'getAlumnos']);
-
-Route::get('/clases/{claseId}/alumnos', [ClaseController::class, 'listarAlumnos']);
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('/clasealumno', [ClaseAlumnoController::class, 'store']); // Agregar alumno a una clase
@@ -57,3 +53,5 @@ Route::get('/clases/{classCode}/materiales', [MaterialController::class, 'index'
 Route::put('/entregas/{id}', [EntregaController::class, 'update']);
 Route::get('entregas', [EntregaController::class, 'index']);
 Route::patch('/entregas/{id}', [EntregaController::class, 'update']);
+Route::post('/entregas/{id}/archivo', [EntregaController::class, 'subirArchivo']);
+Route::get('/entregas/por-tarea', [EntregaController::class, 'entregaPorAlumnoYTarea']);

@@ -39,52 +39,54 @@ class ClaseController extends Controller
         return response()->json($clases);
     }
 
-    public function agregarAlumno(Request $request, $claseId)
+    public function agregarAlumno(Request $request, $codigoGrupo)
     {
         $request->validate([
             'alumno_id' => 'required|exists:usuarios,id',
         ]);
-
-        // Buscar la clase por ID (ya que el parámetro se llama claseId)
-        $clase = Clase::find($claseId);
-
+    
+        // Buscar clase por codigo_grupo en vez de ID
+        $clase = Clase::where('codigo_grupo', $codigoGrupo)->first();
+    
         if (!$clase) {
             return response()->json(['error' => 'Clase no encontrada.'], 404);
         }
-
-        // Verificar si el alumno ya está inscrito para evitar duplicados
+    
+        // Verificar si el alumno ya está inscrito
         $existe = ClaseAlumno::where('clase_id', $clase->id)
                              ->where('alumno_id', $request->alumno_id)
                              ->exists();
-
+    
         if ($existe) {
             return response()->json(['error' => 'El alumno ya está inscrito en esta clase.'], 409);
         }
-
-        // Crear la relación clase-alumno
+    
         ClaseAlumno::create([
             'clase_id' => $clase->id,
             'alumno_id' => $request->alumno_id,
         ]);
-
+    
         $alumno = Usuario::find($request->alumno_id);
-
+    
         return response()->json($alumno, 201);
     }
+    
 
-    public function listarAlumnos($claseId)
+    public function listarAlumnos($codigoGrupo)
     {
-        $clase = Clase::find($claseId);
-
+        // Buscar la clase por el campo 'codigo_grupo'
+        $clase = Clase::where('codigo_grupo', $codigoGrupo)->first();
+    
         if (!$clase) {
             return response()->json(['message' => 'Clase no encontrada'], 404);
         }
-
-        // Asegúrate de tener la relación definida en el modelo Clase: public function alumnos()
+    
+        // Obtener alumnos relacionados (asegúrate de tener la relación alumnos() en el modelo Clase)
         $alumnos = $clase->alumnos;
-
+    
         return response()->json($alumnos);
     }
+    
 
     public function show($id)
     {

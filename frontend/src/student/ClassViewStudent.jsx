@@ -127,41 +127,45 @@ const ClassViewStudent = () => {
 
                 <h3>Tareas</h3>
                 {tareas.length > 0 ? (
-                    <ul>
-                        {tareas.map(tarea => {
-                            const entrega = entregas[tarea.id];
+                <ul>
+                    {tareas.map(tarea => {
+                    const entrega = entregas[tarea.id];
 
-                            return (
-                                <li key={tarea.id}>
-                                    <strong>{tarea.titulo}</strong><br />
-                                    <em>{tarea.instrucciones}</em><br />
-                                    <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
-                                    <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
+                    return (
+                        <li key={tarea.id}>
+                        <strong>{tarea.titulo}</strong><br />
+                        <em>{tarea.instrucciones}</em><br />
+                        <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
+                        <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
 
-                                    {entrega ? (
-                                        <div style={{ marginTop: '10px' }}>
-                                            {entrega.archivo ? (
-                                                <>
-                                                    <p><strong>Ya entregaste:</strong> <a href={`http://127.0.0.1:8000/storage/${entrega.archivo}`} target="_blank" rel="noopener noreferrer">Ver archivo</a></p>
-                                                    <p><strong>Entregado en:</strong> {new Date(entrega.entregado_en).toLocaleString()}</p>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <label>Subir archivo de entrega:</label>
-                                                    <input type="file" onChange={(e) => handleArchivoChange(e, entrega.id)} />
-                                                </>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p style={{ color: 'gray' }}>No tienes asignación para esta tarea.</p>
-                                    )}
-                                </li>
-                            );
-                        })}
-                    </ul>
+                        {entrega ? (
+                            <div style={{ marginTop: '10px' }}>
+                            {entrega.archivo ? (
+                                <>
+                                <p><strong>Ya entregaste:</strong> <a href={`http://127.0.0.1:8000/storage/${entrega.archivo}`} target="_blank" rel="noopener noreferrer">Ver archivo</a></p>
+                                <p><strong>Entregado en:</strong> {new Date(entrega.entregado_en).toLocaleString()}</p>
+                                </>
+                            ) : (
+                                <>
+                                <label>Subir archivo de entrega:</label>
+                                <input type="file" onChange={(e) => handleArchivoChange(e, tarea.id)} />
+                                </>
+                            )}
+                            </div>
+                        ) : (
+                            <div style={{ marginTop: '10px' }}>
+                            <label>Subir archivo de entrega:</label>
+                            <input type="file" onChange={(e) => handleArchivoChange(e, tarea.id)} />
+                            </div>
+                        )}
+                        </li>
+                    );
+                    })}
+                </ul>
                 ) : (
-                    <p>No hay tareas todavía.</p>
+                <p>No hay tareas todavía.</p>
                 )}
+
             </div>
         </Layout>
     );

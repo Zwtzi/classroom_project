@@ -90,13 +90,18 @@ class EntregaController extends Controller
 
     public function entregaPorAlumnoYTarea(Request $request)
     {
+        \Log::info('🚨 Parámetros recibidos en entregaPorAlumnoYTarea:', $request->all());
+
+        $alumno_id = $request->query('alumno_id');
+        $tarea_id = $request->query('tarea_id');
+
         $request->validate([
             'alumno_id' => 'required|exists:usuarios,id',
             'tarea_id' => 'required|exists:tareas,id',
         ]);
 
-        $entrega = Entrega::where('alumno_id', $request->alumno_id)
-                        ->where('tarea_id', $request->tarea_id)
+        $entrega = Entrega::where('alumno_id', $alumno_id)
+                        ->where('tarea_id', $tarea_id)
                         ->first();
 
         if (!$entrega) {

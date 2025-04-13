@@ -77,7 +77,7 @@ class TareaController extends Controller
                 'comentario' => '',
                 'archivo' => null, // Si no hay archivo, puedes poner null o dejar vacío
                 'entregado_en' => null, // Se puede dejar en null al principio
-                'calificacion' => 0, // La calificación inicial es 0
+                'calificacion' => null, // La calificación inicial es 0
             ]);
         }
 

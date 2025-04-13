@@ -54,4 +54,4 @@ Route::put('/entregas/{id}', [EntregaController::class, 'update']);
 Route::get('entregas', [EntregaController::class, 'index']);
 Route::patch('/entregas/{id}', [EntregaController::class, 'update']);
 Route::post('/entregas/{id}/archivo', [EntregaController::class, 'subirArchivo']);
-Route::get('/entregas/por-tarea', [EntregaController::class, 'entregaPorAlumnoYTarea']);
+Route::get('/entregas/buscar', [EntregaController::class, 'obtenerEntregaPorAlumnoYTarea']);

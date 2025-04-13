@@ -78,8 +78,16 @@ class EntregaController extends Controller
         $archivo = $request->file('archivo');
         $ruta = $archivo->store('entregas', 'public');
 
+        // Actualizar la entrega con el archivo y marcarla como completada
         $entrega->archivo = $ruta;
         $entrega->entregado_en = now();
+        $entrega->completada = true;  // Marcar la entrega como completada
+
+        // Establecer la calificación a 0 cuando se sube un archivo
+        if (is_null($entrega->calificacion)) {
+            $entrega->calificacion = 0;
+        }
+
         $entrega->save();
 
         return response()->json([
@@ -87,8 +95,8 @@ class EntregaController extends Controller
             'archivo' => $ruta
         ]);
     }
-
-    public function entregaPorAlumnoYTarea(Request $request)
+    // En EntregaController
+    public function obtenerEntregaPorAlumnoYTarea(Request $request)
     {
         $request->validate([
             'alumno_id' => 'required|exists:usuarios,id',
@@ -96,14 +104,16 @@ class EntregaController extends Controller
         ]);
 
         $entrega = Entrega::where('alumno_id', $request->alumno_id)
-                        ->where('tarea_id', $request->tarea_id)
-                        ->first();
+            ->where('tarea_id', $request->tarea_id)
+            ->first();
 
         if (!$entrega) {
-            return response()->json(['error' => 'Entrega no encontrada'], 404);
+            return response()->json(null, 404);
         }
 
         return response()->json($entrega);
     }
+
+
 
 }

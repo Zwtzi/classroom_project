@@ -8,78 +8,98 @@ const ClassViewStudent = () => {
     const [clase, setClase] = useState(null);
     const [avisos, setAvisos] = useState([]);
     const [materiales, setMateriales] = useState([]);
-    const [tareas, setTareas] = useState([]);  // Agregamos el estado para las tareas
-    const [usuarioId, setUsuarioId] = useState(1); // reemplaza esto con el ID real del alumno si tienes auth
+    const [tareas, setTareas] = useState([]);
+    const [usuarioId, setUsuarioId] = useState(1);
     const [entregas, setEntregas] = useState({});
+    const [entregasCompletadas, setEntregasCompletadas] = useState({});
 
     useEffect(() => {
-        // Cargar detalles de la clase
         axios.get(`http://127.0.0.1:8000/api/clases/${classId}`)
             .then(response => {
                 setClase(response.data);
-
-                // Luego cargar avisos y materiales usando el código del grupo
                 const codigoGrupo = response.data.codigo_grupo;
 
-                // Cargar avisos
                 axios.get(`http://127.0.0.1:8000/api/clases/${codigoGrupo}/avisos`)
                     .then(resAvisos => setAvisos(resAvisos.data))
                     .catch(error => console.error("Error al cargar avisos:", error));
 
-                // Cargar materiales
                 axios.get(`http://127.0.0.1:8000/api/clases/${codigoGrupo}/temas`)
                     .then(resTemas => setMateriales(resTemas.data))
                     .catch(error => console.error("Error al cargar materiales:", error));
 
-                // Cargar tareas
                 axios.get(`http://127.0.0.1:8000/api/clases/${codigoGrupo}/tareas`)
-                .then(async resTareas => {
-                    const tareasData = resTareas.data;
+                    .then(async resTareas => {
+                        const tareasData = resTareas.data;
+                        const entregasMap = {};
 
-                    // Consultar entregas por cada tarea
-                    const entregasMap = {};
-                    for (const tarea of tareasData) {
-                        try {
-                            const resEntrega = await axios.get('http://127.0.0.1:8000/api/entregas/por-tarea', {
-                                params: {
-                                    tarea_id: tarea.id,
-                                    alumno_id: usuarioId
+                        for (const tarea of tareasData) {
+                            try {
+                                const resEntrega = await axios.get('http://127.0.0.1:8000/api/entregas', {
+                                    params: {
+                                        tarea_id: tarea.id,
+                                        alumno_id: usuarioId
+                                    }
+                                });
+
+                                const entrega = resEntrega.data;
+                                entregasMap[tarea.id] = entrega;
+
+                                if (entrega && entrega.archivo) {
+                                    setEntregasCompletadas(prev => ({
+                                        ...prev,
+                                        [tarea.id]: true
+                                    }));
                                 }
-                            });
-                            entregasMap[tarea.id] = resEntrega.data;
-                        } catch (error) {
-                            entregasMap[tarea.id] = null;
+                            } catch (error) {
+                                entregasMap[tarea.id] = null;
+                            }
                         }
-                    }
 
-                    setTareas(tareasData);
-                    setEntregas(entregasMap);
-                })
-                .catch(error => console.error("Error al cargar tareas:", error));
-
+                        setTareas(tareasData);
+                        setEntregas(entregasMap);
+                    })
+                    .catch(error => console.error("Error al cargar tareas:", error));
             })
             .catch(error => console.error("Error al cargar detalles de la clase:", error));
-    }, [classId]);
+    }, [classId, usuarioId]);
 
-    const handleArchivoChange = async (e, entregaId) => {
+    const handleArchivoChange = async (e, tareaId) => {
         const archivo = e.target.files[0];
         if (!archivo) return;
-    
+
+        const entrega = entregas[tareaId];
+        console.log("Tarea ID:", tareaId);
+        console.log("Entrega encontrada:", entrega);
+
+        if (!entrega || !entrega.id) {
+            console.error("ID de entrega no definido para la tarea:", tareaId);
+            return;
+        }
+
         const formData = new FormData();
-        formData.append("archivo", archivo);
-    
+        formData.append('archivo', archivo);
+
         try {
-            await axios.post(`http://127.0.0.1:8000/api/entregas/${entregaId}/archivo`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-            alert("Archivo entregado correctamente 🎉");
-            window.location.reload(); // Recarga para actualizar vista
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/entregas/${entrega.id}/archivo`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            console.log('Archivo subido correctamente:', response.data);
+
+            setEntregasCompletadas(prev => ({
+                ...prev,
+                [tareaId]: true,
+            }));
         } catch (error) {
-            console.error("Error al subir archivo:", error);
-            alert("Error al entregar el archivo");
+            console.error('Error al subir archivo:', error);
         }
     };
-    
 
     if (!clase) {
         return (
@@ -102,10 +122,7 @@ const ClassViewStudent = () => {
                 {avisos.length > 0 ? (
                     <ul>
                         {avisos.map(aviso => (
-                            <li key={aviso.id}>
-                                {aviso.contenido}
-                                {/* Si quieres también mostrar anexos aquí después */}
-                            </li>
+                            <li key={aviso.id}>{aviso.contenido}</li>
                         ))}
                     </ul>
                 ) : (
@@ -116,9 +133,7 @@ const ClassViewStudent = () => {
                 {materiales.length > 0 ? (
                     <ul>
                         {materiales.map(material => (
-                            <li key={material.id}>
-                                {material.nombre} {/* O lo que tengas */}
-                            </li>
+                            <li key={material.id}>{material.nombre}</li>
                         ))}
                     </ul>
                 ) : (
@@ -130,6 +145,7 @@ const ClassViewStudent = () => {
                     <ul>
                         {tareas.map(tarea => {
                             const entrega = entregas[tarea.id];
+                            const completada = entregasCompletadas[tarea.id];
 
                             return (
                                 <li key={tarea.id}>
@@ -147,8 +163,13 @@ const ClassViewStudent = () => {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <label>Subir archivo de entrega:</label>
-                                                    <input type="file" onChange={(e) => handleArchivoChange(e, entrega.id)} />
+                                                    {!completada && (
+                                                        <>
+                                                            <label>Subir archivo de entrega:</label>
+                                                            <input type="file" onChange={(e) => handleArchivoChange(e, tarea.id)} />
+                                                        </>
+                                                    )}
+                                                    {completada && <p style={{ color: 'green' }}>¡Tarea completada!</p>}
                                                 </>
                                             )}
                                         </div>

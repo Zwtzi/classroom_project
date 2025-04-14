@@ -1,0 +1,97 @@
+.entregas-section {
+    padding: 2rem;
+    background-color: #f8fbef;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    margin-top: 2rem;
+  }
+  
+  .entregas-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #339946;
+    font-weight: bold;
+  }
+  
+  .entregas-tabla-container {
+    overflow-x: auto;
+  }
+  
+  .entregas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f8fbef;
+    border: 2px solid #339946;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .entregas-tabla th,
+  .entregas-tabla td {
+    border: 1px solid #339946;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 1rem;
+  }
+  
+  .entregas-tabla th {
+    background-color: #339946;
+    color: #f8fbef;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .entregas-tabla td {
+    color: #2c943f;
+    background-color: #f8fbef;
+  }
+  
+  .archivo-link {
+    color: #339946;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+  
+  .accion-calificacion {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .accion-calificacion input {
+    padding: 0.5rem;
+    border: 2px solid #339946;
+    border-radius: 0.5rem;
+    background-color: #f8fbef;
+    color: #339946;
+    font-weight: bold;
+    font-size: 1rem;
+    outline: none;
+  }
+  
+  .accion-calificacion input:focus {
+    border-color: #2b7a39;
+  }
+  
+  .texto-centrado {
+    text-align: center;
+    padding: 1rem;
+    color: #339946;
+    font-weight: bold;
+  }
+  
+  .submit-button {
+    background-color: #339946;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #2b7a39;
+  }
+  

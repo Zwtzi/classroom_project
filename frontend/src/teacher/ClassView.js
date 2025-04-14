@@ -140,7 +140,7 @@ const ClassView = () => {
   return (
     <Layout2>
       <div className="class-view">
-        <h2>Alumnos en la Clase {classCode}</h2>
+        <h2>Agregar Alumnos a la Clase {classCode}</h2>
         <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
           <option value="">Selecciona un alumno</option>
           {availableStudents
@@ -149,7 +149,7 @@ const ClassView = () => {
               <option key={student.id} value={student.id}>{student.nombre}</option>
             ))}
         </select>
-        <button onClick={handleAddStudent}>Agregar Alumno</button>
+        <button className="boton" onClick={handleAddStudent}>Agregar Alumno</button>
         <h2>Alumnos en la Clase {classCode}</h2>
         <Link to={`/clases/${classCode}/revisar`} className="revisar-link">
           Ir a revisar entregas

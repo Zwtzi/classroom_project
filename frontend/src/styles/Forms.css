@@ -1,189 +1,131 @@
-/* auth-container general */
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-/* Aquí inicia el login */ 
-
 body {
   margin: 0;
   padding: 0;
-  background-color: #f8fbef;
+  background-color: white;
   font-family: 'Roboto', sans-serif;
 }
 
 .login-container {
   display: flex;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
+  background-color: #DAA06D;
 }
 
 .login-left {
-  flex: 1;
+  display: none; 
+}
+
+.vector-image {
   display: flex;
-  background-color: #34a853;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .vector-img {
-  width: 100%;  
+  max-width: 400px;
+  width: 100%;
   height: auto;
-} 
+}
 
 .login-right {
-  flex: 1;
-  background-color: #f9faf5;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 40px;
+  align-items: center;
+  width: 100%;
 }
 
 .auth-container {
-  width: 100%;
-  max-width: 500px;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  max-width: 450px;
+  width: 90%;
   text-align: center;
-  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .auth-container h2 {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 30px;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .input-group {
-  margin-bottom: 20px;
+  width: 100%;
   text-align: left;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-size: 16px;
-  font-weight: 700;
-  color: #2e7d32;
+  font-weight: 600;
+  color: #333;
 }
 
 .input-group input {
   width: 100%;
-  padding: 15px;
+  padding: 14px 18px;
   font-size: 16px;
-  font-weight: 400;
   border: 1px solid #a5d6a7;
-  border-radius: 15px;
+  border-radius: 12px;
+  transition: border-color 0.3s, box-shadow 0.3s;
   box-sizing: border-box;
 }
 
 .input-group input:focus {
-  border-color: #388e3c;
+  border-color: #CD7F32;
+  box-shadow: 0 0 0 3px rgba(205, 127, 50, 0.2);
   outline: none;
 }
 
 .btn {
-  background-color: #388e3c;
-  align-self: center;
+  background-color: #CD7F32;
   width: 60%;
   color: #fff;
-  padding: 15px;
+  padding: 14px;
   border: none;
-  border-radius: 15px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  text-decoration: none;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn:hover {
-  background-color: #2e7d32;
-}
-
-.auth-container p {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #2e7d32;
-}
-
-.auth-container p a {
-  color: #388e3c;
-  text-decoration: none;
-}
-
-.auth-container p a:hover {
-  text-decoration: underline;
-}
-
-/* Aqui inicia el register */
-
-.register-container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
-
-.register-right {
-  flex: 1;
-  background-color: #f9faf5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.auth-container-register {
-  width: 100%;
-  max-width: 500px; 
-  text-align: center;
-}
-
-.auth-container-register h2 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 30px;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #2e7d32;
-}
-
-.input-group input,
-.input-group select {
-  width: 100%;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: 400;
-  border: 1px solid #a5d6a7;
-  border-radius: 20px;
-  box-sizing: border-box;
-}
-
-.input-group input:focus,
-.input-group select:focus {
-  border-color: #388e3c;
-  outline: none;
+  background-color: #754a1f;
+  transform: scale(1.02);
 }
 
 .error-message {
   color: #d32f2f;
   margin-top: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

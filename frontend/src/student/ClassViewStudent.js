@@ -118,10 +118,14 @@ const ClassViewStudent = () => {
                                 return (
                                     <li key={tarea.id}>
                                         <strong>{tarea.titulo}</strong>
-                                        <em>{tarea.instrucciones}</em>
-                                        <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
                                         <p><strong>Tema:</strong> {tarea.tema ? tarea.tema.nombre : 'Sin tema'}</p>
+                                        <em>{tarea.instrucciones}</em>
 
+                                        <br></br>
+                                        <br></br>
+                                        <hr></hr>
+
+                                        <p><strong>Fecha límite:</strong> {new Date(tarea.fecha_limite).toLocaleString()}</p>
                                         {entrega ? (
                                             <div style={{ marginTop: '10px' }}>
                                                 {entrega.archivo ? (
@@ -131,15 +135,14 @@ const ClassViewStudent = () => {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <label>Subir archivo de entrega:</label>
                                                         <input type="file" onChange={(e) => handleArchivoChange(e, tarea.id)} />
                                                     </>
                                                 )}
                                             </div>
                                         ) : (
-                                            <div style={{ marginTop: '10px' }}>
-                                                <label>Subir archivo de entrega:</label>
-                                                <input type="file" onChange={(e) => handleArchivoChange(e, tarea.id)} />
+                                            <div className="entrega-container">
+                                                <label className="file-label">Añade tu trabajo:</label>
+                                                <input type="file" className="file-input" onChange={(e) => handleArchivoChange(e, tarea.id)} />
                                             </div>
                                         )}
                                     </li>

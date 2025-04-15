@@ -343,14 +343,19 @@ const ClassView = () => {
                     <div className="aviso-header">
                       <div className="aviso-user-info">
                         <strong className="aviso-nombre">{tarea.titulo}</strong>
+                        <br></br>
+                        <br></br>
                         <span className="aviso-fecha">
                           Fecha límite: {new Date(tarea.fecha_limite).toLocaleString()}
                         </span>
                       </div>
                     </div>
 
+                    <br></br>
+                    <h4>Instrucciones:</h4>
                     <p className="aviso-contenido">{tarea.instrucciones}</p>
 
+                    <br></br>
                     {tarea.tema && (
                       <div className="aviso-archivos">
                         <h4>Tema relacionado:</h4>

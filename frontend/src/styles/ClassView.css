@@ -400,3 +400,53 @@
   margin-right: 6px;
   stroke-width: 2.5;
 }
+
+.entrega-container {
+  margin-top: 10px;
+}
+
+.file-label {
+  font-size: 16px;
+  color: black;
+  margin-bottom: 8px;
+  display: block;
+  font-weight: bold;
+}
+
+.file-input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 80%;
+  max-width: 300px;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  margin-top: 5px;
+  display: block; 
+}
+
+.file-input:hover {
+  border-color: orange;
+}
+
+.file-input:focus {
+  border-color: orange;
+  outline: none;
+}
+
+.file-input::file-selector-button {
+  background-color: orange;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.file-input::file-selector-button:hover {
+  background-color: rgb(194, 126, 0);
+}
+

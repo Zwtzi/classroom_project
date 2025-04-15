@@ -15,7 +15,6 @@
   border-radius: 8px;
 }
 
-/* Información de la clase */
 .class-view .class-info {
   flex: 1;
 }
@@ -357,4 +356,47 @@
 
 .class-view .revisar-btn:hover {
   background-color: #45a049;
+}
+
+.class-view .file-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: gray;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.class-view .file-button:hover {
+  background-color: rgb(107, 107, 107);
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #e0e7ff; /* azul claro */
+  color: #1d4ed8; /* azul oscuro */
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+  background-color: #c7d2fe;
+  transform: translateX(-2px);
+  cursor: pointer;
+}
+
+.back-button svg {
+  margin-right: 6px;
+  stroke-width: 2.5;
 }

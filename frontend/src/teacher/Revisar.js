@@ -52,7 +52,6 @@ const Revisar = () => {
                                 <th>Tarea</th>
                                 <th>Clase</th>
                                 <th>Archivo</th>
-                                <th>Comentario</th>
                                 <th>Calificación</th>
                                 <th>Actualizar</th>
                             </tr>
@@ -60,7 +59,7 @@ const Revisar = () => {
                         <tbody>
                             {entregas.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="text-center py-4">No hay entregas registradas.</td>
+                                    <td colSpan="6" className="text-center py-4">No hay entregas registradas.</td>
                                 </tr>
                             ) : (
                                 entregas.map((entrega) => (
@@ -80,7 +79,6 @@ const Revisar = () => {
                                                 </a>
                                             ) : 'No enviado'}
                                         </td>
-                                        <td>{entrega.comentario || '-'}</td>
                                         <td>
                                             {entrega.calificacion != null ? `${entrega.calificacion}%` : 'Sin calificar'}
                                         </td>

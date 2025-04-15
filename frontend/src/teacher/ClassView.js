@@ -136,8 +136,6 @@ const ClassView = () => {
     }
   };
 
-
-
   return (
     <Layout2>
       <div className="class-view">
@@ -165,7 +163,7 @@ const ClassView = () => {
       
           <ul>
             {students.map((student, index) => (
-              <li key={index}>{student.nombre}</li>
+              <li key={index}>•&nbsp; {student.nombre}</li>
             ))}
           </ul>
 
@@ -187,7 +185,7 @@ const ClassView = () => {
               <div className="aviso-input-container">
                 <form onSubmit={handleAddAviso} className="aviso-form">
                   <textarea
-                    placeholder="Anuncie algo a la clase..."
+                    placeholder="Escribe tu aviso"
                     value={nuevoAviso}
                     onChange={(e) => setNuevoAviso(e.target.value)}
                     required
@@ -215,7 +213,7 @@ const ClassView = () => {
                   <li key={aviso.id} className="aviso-item">
                     <div className="aviso-header">
                       <div className="aviso-user-info">
-                        <strong className="aviso-nombre">{aviso.usuario?.nombre || 'Nombre del Usuario'}</strong>
+                        <strong className="aviso-nombre">{aviso.usuario?.nombre || 'Nombre del Usuario'}</strong> -&nbsp;
                         <span className="aviso-fecha">{new Date(aviso.created_at).toLocaleString()}</span>
                       </div>
                     </div>
@@ -241,7 +239,6 @@ const ClassView = () => {
               </ul>
             </div>
             
-            {/* Sección temas */}
             <div className="card">
               <h2>Temas</h2>
               <div className="aviso-input-container">
@@ -291,7 +288,6 @@ const ClassView = () => {
               </ul>
             </div>
 
-            {/* Sección tareas */}
             <div className="card">
               <h2>Tareas</h2>
               <div className="aviso-input-container">
